@@ -123,15 +123,18 @@ function highlightActiveBook() {
 
 // --- ALGORITMO MATEMÁTICO DE REJILLAS ADAPTATIVAS (FR) ---
 function calculateGridDimensions(count, maxCols, maxRows) {
+    // 1. Calculamos columnas iniciales aproximando a un cuadrado
     let cols = Math.ceil(Math.sqrt(count));
     let rows = Math.ceil(count / cols);
 
+    // 2. Si las filas calculadas exceden el límite, forzamos el límite de filas y calculamos columnas
+    if (rows > maxRows) {
+        rows = maxRows;
+        cols = Math.ceil(count / rows);
+    }
     if (cols > maxCols) {
         cols = maxCols;
         rows = Math.ceil(count / cols);
-    }
-    if (rows > maxRows) {
-        rows = maxRows;
     }
     return { cols, rows };
 }
@@ -147,6 +150,21 @@ function darkenHexColor(hex, percent) {
     R = R < 0 ? 0 : R;
     G = G < 0 ? 0 : G;
     B = B < 0 ? 0 : B;
+
+    return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+}
+
+// Función matemática para aclarar un color hexadecimal de forma proporcional
+function lightenHexColor(hex, percent) {
+    let num = parseInt(hex.replace("#", ""), 16);
+    let amt = Math.round(2.55 * percent);
+    let R = (num >> 16) + amt;
+    let G = (num >> 8 & 0x00FF) + amt;
+    let B = (num & 0x0000FF) + amt;
+
+    R = R < 255 ? (R < 0 ? 0 : R) : 255;
+    G = G < 255 ? (G < 0 ? 0 : G) : 255;
+    B = B < 255 ? (B < 0 ? 0 : B) : 255;
 
     return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
 }
@@ -334,6 +352,7 @@ function renderVersesGrid(totalVerses) {
 
     // Obtener color del libro (Heredará el color del libro exacto)
     const bookColor = BIBLE_CAT_COLORS[selectedBookObj.cat] || BIBLE_CAT_COLORS.default;
+    const verseColor = lightenHexColor(bookColor, 18);
 
     versesToRender.forEach(item => {
         const tile = document.createElement('div');
@@ -365,7 +384,7 @@ function renderVersesGrid(totalVerses) {
                 tile.classList.add('active');
                 tile.style.backgroundColor = darkenHexColor(bookColor, 20); // Oscurecido al seleccionarse
             } else {
-                tile.style.backgroundColor = bookColor; // Hereda el color exacto
+                tile.style.backgroundColor = verseColor; // Hereda el color exacto
                 tile.style.borderColor = 'rgba(0,0,0,0.15)';
             }
 
@@ -390,6 +409,7 @@ function selectVerse(verseNum, mustScroll) {
     selectedVerseNum = verseNum;
 
     const bookColor = BIBLE_CAT_COLORS[selectedBookObj.cat] || BIBLE_CAT_COLORS.default;
+    const verseColor = lightenHexColor(bookColor, 18);
 
     // Resaltar en cuadrícula de versículos (Hereda color y oscurece seleccionado)
     versesGrid.querySelectorAll('.num-tile').forEach(t => {
@@ -402,7 +422,7 @@ function selectVerse(verseNum, mustScroll) {
         } else {
             t.classList.remove('active');
             if (!t.classList.contains('live') && t.textContent !== '<' && t.textContent !== '>') {
-                t.style.backgroundColor = bookColor; // Restaurar color padre
+                t.style.backgroundColor = verseColor; // Restaurar color padre
             }
         }
     });
@@ -433,6 +453,7 @@ function projectVerse(verseNum, textToProject) {
     window.api.proyectarTexto(textToProject);
 
     const bookColor = BIBLE_CAT_COLORS[selectedBookObj.cat] || BIBLE_CAT_COLORS.default;
+    const verseColor = lightenHexColor(bookColor, 18);
 
     // Actualizar cuadrícula
     versesGrid.querySelectorAll('.num-tile').forEach(t => {
@@ -445,7 +466,7 @@ function projectVerse(verseNum, textToProject) {
             if (num === selectedVerseNum) {
                 t.style.backgroundColor = darkenHexColor(bookColor, 20);
             } else if (t.textContent !== '<' && t.textContent !== '>') {
-                t.style.backgroundColor = bookColor;
+                t.style.backgroundColor = verseColor;
             }
         }
     });
@@ -466,6 +487,7 @@ function clearProjection() {
     window.api.limpiarPantalla();
 
     const bookColor = BIBLE_CAT_COLORS[selectedBookObj.cat] || BIBLE_CAT_COLORS.default;
+    const verseColor = lightenHexColor(bookColor, 18);
 
     versesGrid.querySelectorAll('.num-tile').forEach(t => {
         t.classList.remove('live');
@@ -473,7 +495,7 @@ function clearProjection() {
         if (num === selectedVerseNum) {
             t.style.backgroundColor = darkenHexColor(bookColor, 20);
         } else if (t.textContent !== '<' && t.textContent !== '>') {
-            t.style.backgroundColor = bookColor;
+            t.style.backgroundColor = verseColor;
         }
     });
     
