@@ -17,7 +17,7 @@ let themeLineHeight, themeLineHeightVal, themeLetterSpacing, themeLetterSpacingV
 let themeCheckBold, themeCheckItalic, themeCheckUppercase;
 let themeColorInput, themeShadowColorInput;
 
-// Contorno, Caja de Relleno e IPC
+// Contorno, Caja de Relleno, Título y Comentarios
 let themeCheckStroke, strokeControlsRow, themeStrokeColor, themeStrokeWidth, themeStrokeWidthVal;
 let themeCheckFillbox, fillboxControlsRow, themeFillboxColor, themeFillboxOpacity, themeFillboxOpacityVal;
 let themeTitlePos, titleBarControlsRow, themeTitleBarColor, themeTitleBarOpacity, themeTitleBarOpacityVal;
@@ -27,9 +27,10 @@ let themeBgTypeSelect, groupBgMedia, themeBgMediaSelect, groupBgColor, themeBgCo
 let btnDeleteTheme, btnSaveTheme;
 let settingsSaveStatus;
 
-// Vista Previa
+// Vista Previa (Elementos fijos de título)
 let themePreviewBox, previewBgVideo, previewBgImage, previewTextOverlay, previewTextContent;
-let previewTextBox, previewTitleBar;
+let previewTextBox;
+let previewTitleBarTop, previewTitleBarBottom, previewTitleInlineTop, previewTitleInlineBottom;
 
 export async function init() {
     // 1. Vincular elementos del catálogo de temas
@@ -97,7 +98,12 @@ export async function init() {
     previewTextOverlay = document.getElementById('preview-text-overlay');
     previewTextContent = document.getElementById('preview-text-content');
     previewTextBox = document.getElementById('preview-text-box');
-    previewTitleBar = document.getElementById('preview-title-bar');
+    
+    // Las 4 posiciones del título en el HTML
+    previewTitleBarTop = document.getElementById('preview-title-bar-top');
+    previewTitleBarBottom = document.getElementById('preview-title-bar-bottom');
+    previewTitleInlineTop = document.getElementById('preview-title-inline-top');
+    previewTitleInlineBottom = document.getElementById('preview-title-inline-bottom');
 
     // 2. Escuchar cambios de interfaz en tiempo real (Live Preview)
     themeNameInput.addEventListener('input', updatePreview);
@@ -417,15 +423,18 @@ function setAlignV(align) {
     updatePreview();
 }
 
-// ================= VISTA PREVIA COMPLETA EN TIEMPO REAL =================
+// ================= VISTA PREVIA COMPLETA EN TIEMPO REAL (CONTAINER QUERIES) =================
 
 function updatePreview() {
+    // --- TRUCO CLAVE: Pasar el tamaño, interlineado y espaciado a variables CSS en el contenedor ---
+    // De esta forma, el CSS de Container Queries escala la letra proporcionalmente al alto del visor (cqh)
+    themePreviewBox.style.setProperty('--theme-font-size', themeSizeSlider.value);
+    themePreviewBox.style.setProperty('--theme-line-height', themeLineHeight.value);
+    themePreviewBox.style.setProperty('--theme-letter-spacing', `${themeLetterSpacing.value}px`);
+
     // 1. Estilo y formato de fuente
     previewTextContent.style.fontFamily = themeFontSelect.value;
-    previewTextContent.style.fontSize = `${themeSizeSlider.value}vh`;
     previewTextContent.style.color = themeColorInput.value;
-    previewTextContent.style.lineHeight = themeLineHeight.value;
-    previewTextContent.style.letterSpacing = `${themeLetterSpacing.value}px`;
 
     // Estilos tipográficos (Negrita, Cursiva, Mayúsculas)
     previewTextContent.style.fontWeight = themeCheckBold.checked ? 'bold' : 'normal';
@@ -447,40 +456,39 @@ function updatePreview() {
     if (themeCheckFillbox.checked) {
         const rgbaColor = hexToRgba(themeFillboxColor.value, themeFillboxOpacity.value);
         previewTextBox.style.backgroundColor = rgbaColor;
-        previewTextBox.style.padding = '15px 25px';
+        previewTextBox.style.padding = '3% 5%'; // Usamos porcentajes para que la caja también sea adaptativa
     } else {
         previewTextBox.style.backgroundColor = 'transparent';
         previewTextBox.style.padding = '0';
     }
 
-    // 4. Simulación del Título del Versículo
+    // 4. Lógica de Títulos Fijos (Apagar todos y encender solo el activo)
+    previewTitleBarTop.style.display = 'none';
+    previewTitleBarBottom.style.display = 'none';
+    previewTitleInlineTop.style.display = 'none';
+    previewTitleInlineBottom.style.display = 'none';
+
     const tPos = themeTitlePos.value;
-    previewTitleBar.style.display = 'none';
 
     if (tPos === 'top') {
-        previewTitleBar.style.display = 'block';
-        previewTitleBar.style.backgroundColor = 'transparent';
-        previewTitleBar.style.color = themeColorInput.value; // Hereda el color del texto
-        previewTextOverlay.appendChild(previewTitleBar); // Asegurar que el título va arriba
-        previewTextOverlay.appendChild(previewTextContent);
+        previewTitleInlineTop.style.display = 'block';
+        previewTitleInlineTop.style.color = themeColorInput.value; // Hereda el color del texto
+        previewTitleInlineTop.style.backgroundColor = 'transparent';
     } else if (tPos === 'bottom') {
-        previewTitleBar.style.display = 'block';
-        previewTitleBar.style.backgroundColor = 'transparent';
-        previewTitleBar.style.color = themeColorInput.value;
-        previewTextOverlay.appendChild(previewTextContent); // Asegurar que el título va abajo
-        previewTextOverlay.appendChild(previewTitleBar);
+        previewTitleInlineBottom.style.display = 'block';
+        previewTitleInlineBottom.style.color = themeColorInput.value;
+        previewTitleInlineBottom.style.backgroundColor = 'transparent';
     } else if (tPos.startsWith('bar-')) {
-        previewTitleBar.style.display = 'block';
         const rgbaBarColor = hexToRgba(themeTitleBarColor.value, themeTitleBarOpacity.value);
-        previewTitleBar.style.backgroundColor = rgbaBarColor;
-        previewTitleBar.style.color = '#ffffff'; // Faja oscura con texto blanco nítido
-
+        
         if (tPos === 'bar-top') {
-            previewTextOverlay.appendChild(previewTitleBar);
-            previewTextOverlay.appendChild(previewTextContent);
-        } else {
-            previewTextOverlay.appendChild(previewTextContent);
-            previewTextOverlay.appendChild(previewTitleBar);
+            previewTitleBarTop.style.display = 'block';
+            previewTitleBarTop.style.backgroundColor = rgbaBarColor;
+            previewTitleBarTop.style.color = '#ffffff';
+        } else if (tPos === 'bar-bottom') {
+            previewTitleBarBottom.style.display = 'block';
+            previewTitleBarBottom.style.backgroundColor = rgbaBarColor;
+            previewTitleBarBottom.style.color = '#ffffff';
         }
     }
 

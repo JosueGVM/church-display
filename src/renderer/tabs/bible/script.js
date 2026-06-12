@@ -446,11 +446,45 @@ function selectVerse(verseNum, mustScroll) {
     });
 }
 
-// Proyección Oficial "EN VIVO"
-function projectVerse(verseNum, textToProject) {
+// Proyección "EN VIVO" con herencia de Temas de settings.json
+async function projectVerse(verseNum, textToProject) {
     activeLiveVerseNum = verseNum;
 
-    window.api.proyectarTexto(textToProject);
+    try {
+        // 1. Obtener la base de datos de configuraciones portátil
+        const settings = await window.api.getSettings();
+        
+        // 2. Buscar qué tema está asignado de forma global para la Biblia
+        const bibleThemeId = settings.defaultBibleTheme || 'default';
+        const activeTheme = settings.themes.find(t => t.id === bibleThemeId) || settings.themes[0];
+
+         // --- TRUCO CLAVE: Separar la cita bíblica del texto del versículo ---
+        const partes = textToProject.split('\n\n');
+        const citaBiblica = partes[0] || ""; // Ej: "Génesis 1:1"
+        const textoLimpio = partes[1] || ""; // Ej: ""En un principio...""
+
+        // 3. Crear el paquete de datos unificado (Texto + Estilo + Fondo si tiene)
+        const payload = {
+            texto: textoLimpio,
+            cita: citaBiblica,
+            esBiblia: true,
+            estilo: activeTheme,
+            // Si el tema tiene un fondo de imagen o video, lo enviamos de una vez
+            background: activeTheme.bgType !== 'color' ? {
+                path: activeTheme.bgPath,
+                type: activeTheme.bgType
+            } : null,
+            clearBg: activeTheme.bgType === 'color' // Si es color, limpiamos fondos multimedia previos
+        };
+
+        // 4. Enviar los datos por IPC al proyector
+        window.api.proyectarTexto(payload);
+
+    } catch (err) {
+        console.error("[Bible] Error al proyectar con estilos de tema:", err);
+        // Fallback: Si algo falla, proyectamos el texto plano para no congelar la pantalla
+        window.api.proyectarTexto(textToProject);
+    }
 
     const bookColor = BIBLE_CAT_COLORS[selectedBookObj.cat] || BIBLE_CAT_COLORS.default;
     const verseColor = lightenHexColor(bookColor, 18);

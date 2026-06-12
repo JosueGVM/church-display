@@ -365,12 +365,43 @@ function selectSlide(index) {
     });
 }
 
-function projectSlide(index) {
+// Proyección con soporte Mixto de Temas (Por canción o global)
+async function projectSlide(index) {
     activeLiveSlideIndex = index;
     const slide = parsedSlides[index];
 
-    // Enviar al proyector
-    window.api.proyectarTexto(slide.text);
+    try {
+        const settings = await window.api.getSettings();
+        
+        // 1. Comprobar si esta canción específica tiene un tema asociado
+        let themeId = 'default';
+        if (selectedSong && settings.songThemes && settings.songThemes[selectedSong.id]) {
+            themeId = settings.songThemes[selectedSong.id];
+        } else {
+            // 2. Si no tiene, hereda el Tema Global de Canciones
+            themeId = settings.defaultSongsTheme || 'default';
+        }
+
+        const activeTheme = settings.themes.find(t => t.id === themeId) || settings.themes[0];
+
+        // 3. Empaquetar Texto + Estilo + Fondo
+        const payload = {
+            texto: slide.text,
+            estilo: activeTheme,
+            background: activeTheme.bgType !== 'color' ? {
+                path: activeTheme.bgPath,
+                type: activeTheme.bgType
+            } : null,
+            clearBg: activeTheme.bgType === 'color'
+        };
+
+        // 4. Proyectar
+        window.api.proyectarTexto(payload);
+
+    } catch (err) {
+        console.error("[Songs] Error al proyectar slide con tema:", err);
+        window.api.proyectarTexto(slide.text);
+    }
 
     // Pintar estado live en UI
     slidesGrid.querySelectorAll('.slide-card').forEach(card => {

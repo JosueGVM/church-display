@@ -215,6 +215,55 @@ input[type="color"] {
     gap: 10px;
 }
 
+/* ESTILOS DE ACORDEONES COLAPSABLES (details / summary) */
+details.settings-group {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+details.settings-group summary {
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    background-color: #16161b;
+    user-select: none;
+    outline: none;
+    list-style: none; /* Quita la flecha nativa de algunos navegadores */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Indicador de flecha personalizado para el acordeón */
+details.settings-group summary::after {
+    content: "▼";
+    font-size: 9px;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+}
+
+details.settings-group[open] summary::after {
+    transform: rotate(180deg); /* Rota la flecha al estar abierto */
+}
+
+details.settings-group summary:hover {
+    background-color: var(--border-color);
+}
+
+details.settings-group .group-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 1px solid var(--border-color);
+    background-color: rgba(0,0,0,0.05);
+}
 
 /* ================= COLUMNA 3 (VISOR PREVISUALIZADOR) ================= */
 .themes-preview-column {
@@ -250,12 +299,13 @@ input[type="color"] {
     align-items: center;
     justify-content: center;
     background-color: #101014;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 /* Caja de Proyección en Miniatura 16:9 */
 .theme-preview-box {
     width: 100%;
-    max-width: 500px;
     aspect-ratio: 16 / 9;
     background-color: #131316;
     border: 1px solid var(--border-color);
@@ -264,6 +314,7 @@ input[type="color"] {
     position: relative;
     box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     box-sizing: border-box;
+    container-type: size;
 }
 
 .preview-bg {
@@ -294,11 +345,13 @@ input[type="color"] {
     text-align: center;
     font-family: 'Segoe UI', sans-serif;
     color: #ffffff;
-    font-size: 5vh;
-    font-weight: bold;
-    line-height: 1.4;
+    font-size: calc(var(--theme-font-size, 5)* 1cqh);
+    font-weight: normal;
+    line-height: var(--theme-line-height, 1.4);
+    letter-spacing: var(--theme-letter-spacing), 0px;
     white-space: pre-line;
-    transition: all 0.2s ease; /* Transición suave de estilos en la vista previa */
+    box-sizing: border-box;
+    word-wrap: break-word;
 }
 
 /* Estilos de separadores lógicos en el formulario */
@@ -316,11 +369,11 @@ input[type="color"] {
     display: none !important;
 }
 
-/* Caja de Relleno del Texto (Bounding Box Única) */
+/* Caja de Relleno Única */
 .preview-text-box {
-    background-color: transparent; /* Dinámico por JS */
-    border-radius: 8px;
-    padding: 0; /* Dinámico por JS */
+    background-color: transparent;
+    border-radius: 6px;
+    padding: 0;
     transition: all 0.2s ease;
     max-width: 90%;
     display: flex;
@@ -340,4 +393,42 @@ input[type="color"] {
     text-align: center;
     border-radius: 4px;
     margin-bottom: 8px;
+}
+
+/* Faja de Título de Ancho Completo (Fija Arriba o Abajo) */
+.preview-title-bar-full {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    font-size: calc(2.5 * 1cqh); /* Escala dinámicamente */
+    font-weight: bold;
+    padding: calc(1.5 * 1cqh) 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-sizing: border-box;
+    text-align: center;
+    z-index: 3;
+    transition: all 0.2s ease;
+}
+
+#preview-title-bar-top {
+    top: 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.08);
+}
+
+#preview-title-bar-bottom {
+    bottom: 0;
+    border-top: 1px dashed rgba(255,255,255,0.08);
+}
+
+/* Título Estándar Flotante (Dentro de la caja de texto) */
+.preview-title-inline {
+    width: 100%;
+    font-size: calc(2.2 * 1cqh); /* Escala dinámicamente */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-sizing: border-box;
+    text-align: center;
+    margin-bottom: 12px;
 }

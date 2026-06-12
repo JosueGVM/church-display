@@ -26,195 +26,219 @@
         </div>
     </div>
 
-    <!-- COLUMNA 2: Editor Avanzado de Atributos (Formulario con Scroll) -->
+    <!-- COLUMNA 2: Editor Avanzado (Agrupado en Acordeones Colapsables) -->
     <div class="themes-column editor-column">
         <div class="column-header-title">
             <h3 id="editor-header-title">Editar Tema</h3>
         </div>
         
-        <div class="column-scroll-container editor-form" id="theme-editor-form">
-            <!-- Nombre -->
-            <div class="form-group">
-                <label for="theme-name">Nombre del Tema:</label>
-                <input type="text" id="theme-name" placeholder="Ej: Adoración Azul">
-            </div>
-
-            <!-- Tipografía y Estilo -->
-            <div class="form-group">
-                <label for="theme-font-select">Tipografía (Letra):</label>
-                <select id="theme-font-select"></select>
-            </div>
-
-            <div class="form-group">
-                <div class="label-row">
-                    <label for="theme-size-slider">Tamaño de letra:</label>
-                    <span id="theme-size-val">5 vh</span>
-                </div>
-                <input type="range" id="theme-size-slider" min="3" max="10" step="0.5" value="5">
-            </div>
-
-            <!-- Ajustes de Tipografía Fina -->
-            <div class="form-row">
-                <div class="form-group">
-                    <div class="label-row">
-                        <label for="theme-line-height">Interlineado:</label>
-                        <span id="theme-line-height-val">1.4</span>
-                    </div>
-                    <input type="range" id="theme-line-height" min="1.0" max="2.0" step="0.1" value="1.4">
-                </div>
-                <div class="form-group">
-                    <div class="label-row">
-                        <label for="theme-letter-spacing">Espaciado letras:</label>
-                        <span id="theme-letter-spacing-val">0 px</span>
-                    </div>
-                    <input type="range" id="theme-letter-spacing" min="-2" max="10" step="1" value="0">
-                </div>
-            </div>
-
-            <div class="form-row checkbox-row">
-                <div class="form-checkbox-group">
-                    <input type="checkbox" id="theme-check-bold">
-                    <label for="theme-check-bold"><b>Negrita</b></label>
-                </div>
-                <div class="form-checkbox-group">
-                    <input type="checkbox" id="theme-check-italic">
-                    <label for="theme-check-italic"><i>Cursiva</i></label>
-                </div>
-                <div class="form-checkbox-group">
-                    <input type="checkbox" id="theme-check-uppercase">
-                    <label for="theme-check-uppercase">MAYÚSCULAS</label>
-                </div>
-            </div>
-
-            <!-- Colores de Fuente y Sombra -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="theme-color">Color Texto:</label>
-                    <input type="color" id="theme-color" value="#ffffff">
-                </div>
-                <div class="form-group">
-                    <label for="theme-shadow-color">Color Sombra:</label>
-                    <input type="color" id="theme-shadow-color" value="#000000">
-                </div>
-            </div>
-
-            <!-- Contorno (Text Stroke) -->
-            <div class="form-group border-section">
-                <div class="form-checkbox-group">
-                    <input type="checkbox" id="theme-check-stroke">
-                    <label for="theme-check-stroke">Activar contorno de letras</label>
-                </div>
-                <div class="form-row stroke-controls hidden" id="stroke-controls-row">
+        <div class="column-scroll-container editor-form" id="theme-editor-form" style="padding: 5px; gap: 8px;">
+            
+            <!-- ACORDEÓN 1: GENERAL E INICIO -->
+            <details class="settings-group" open>
+                <summary>🏷️ General e Inicio</summary>
+                <div class="group-content">
                     <div class="form-group">
-                        <label for="theme-stroke-color">Color contorno:</label>
-                        <input type="color" id="theme-stroke-color" value="#000000">
+                        <label for="theme-name">Nombre del Tema:</label>
+                        <input type="text" id="theme-name" placeholder="Ej: Adoración Azul">
                     </div>
+                </div>
+            </details>
+
+            <!-- ACORDEÓN 2: FUENTE Y EFECTOS -->
+            <details class="settings-group" open>
+                <summary>🔤 Fuente y Efectos</summary>
+                <div class="group-content">
+                    <div class="form-group">
+                        <label for="theme-font-select">Tipografía (Letra):</label>
+                        <select id="theme-font-select"></select>
+                    </div>
+
                     <div class="form-group">
                         <div class="label-row">
-                            <label for="theme-stroke-width">Grosor:</label>
-                            <span id="theme-stroke-width-val">1 px</span>
+                            <label for="theme-size-slider">Tamaño de letra (Proyector):</label>
+                            <span id="theme-size-val">5 vh</span>
                         </div>
-                        <input type="range" id="theme-stroke-width" min="1" max="5" step="0.5" value="1">
+                        <!-- Rango máximo aumentado a 25 para proyectores grandes -->
+                        <input type="range" id="theme-size-slider" min="3" max="25" step="0.5" value="5">
                     </div>
-                </div>
-            </div>
 
-            <!-- Caja de Relleno del Texto (Bounding Box) -->
-            <div class="form-group border-section">
-                <div class="form-checkbox-group">
-                    <input type="checkbox" id="theme-check-fillbox">
-                    <label for="theme-check-fillbox">Activar caja de relleno de texto</label>
-                </div>
-                <div class="form-row fillbox-controls hidden" id="fillbox-controls-row">
-                    <div class="form-group">
-                        <label for="theme-fillbox-color">Color relleno:</label>
-                        <input type="color" id="theme-fillbox-color" value="#000000">
-                    </div>
-                    <div class="form-group">
-                        <div class="label-row">
-                            <label for="theme-fillbox-opacity">Opacidad:</label>
-                            <span id="theme-fillbox-opacity-val">50 %</span>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="theme-line-height">Interlineado:</label>
+                                <span id="theme-line-height-val">1.4</span>
+                            </div>
+                            <input type="range" id="theme-line-height" min="1.0" max="2.0" step="0.1" value="1.4">
                         </div>
-                        <input type="range" id="theme-fillbox-opacity" min="0" max="1" step="0.1" value="0.5">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Alineaciones -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Alineación Horizontal:</label>
-                    <div class="align-grid" id="align-h-grid">
-                        <button class="btn-align" data-align="left" title="Izquierda">⬅</button>
-                        <button class="btn-align" data-align="center" title="Centro">⏺</button>
-                        <button class="btn-align" data-align="right" title="Derecha">➡</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Alineación Vertical:</label>
-                    <div class="align-grid" id="align-v-grid">
-                        <button class="btn-align" data-align="top" title="Arriba">▲</button>
-                        <button class="btn-align" data-align="center" title="Centro">⏺</button>
-                        <button class="btn-align" data-align="bottom" title="Abajo">▼</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Título del Versículo (Referencia Bíblica) -->
-            <div class="form-group border-section">
-                <label for="theme-title-pos">Ubicación del Título (Biblia):</label>
-                <select id="theme-title-pos">
-                    <option value="top">Arriba del texto</option>
-                    <option value="bottom">Abajo del texto</option>
-                    <option value="bar-top">Fila de ancho completo (Arriba)</option>
-                    <option value="bar-bottom">Fila de ancho completo (Abajo)</option>
-                </select>
-                <!-- Ajustes de la barra de título si se selecciona "Fila de ancho completo" -->
-                <div class="form-row stroke-controls hidden" id="title-bar-controls-row">
-                    <div class="form-group">
-                        <label for="theme-title-bar-color">Color de faja:</label>
-                        <input type="color" id="theme-title-bar-color" value="#000000">
-                    </div>
-                    <div class="form-group">
-                        <div class="label-row">
-                            <label for="theme-title-bar-opacity">Opacidad faja:</label>
-                            <span id="theme-title-bar-opacity-val">60 %</span>
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="theme-letter-spacing">Espaciado:</label>
+                                <span id="theme-letter-spacing-val">0 px</span>
+                            </div>
+                            <input type="range" id="theme-letter-spacing" min="-2" max="10" step="1" value="0">
                         </div>
-                        <input type="range" id="theme-title-bar-opacity" min="0" max="1" step="0.1" value="0.6">
+                    </div>
+
+                    <div class="form-row checkbox-row">
+                        <div class="form-checkbox-group">
+                            <input type="checkbox" id="theme-check-bold">
+                            <label for="theme-check-bold"><b>B</b></label>
+                        </div>
+                        <div class="form-checkbox-group">
+                            <input type="checkbox" id="theme-check-italic">
+                            <label for="theme-check-italic"><i>I</i></label>
+                        </div>
+                        <div class="form-checkbox-group">
+                            <input type="checkbox" id="theme-check-uppercase">
+                            <label for="theme-check-uppercase">Mayús</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="theme-color">Color Texto:</label>
+                            <input type="color" id="theme-color" value="#ffffff">
+                        </div>
+                        <div class="form-group">
+                            <label for="theme-shadow-color">Color Sombra:</label>
+                            <input type="color" id="theme-shadow-color" value="#000000">
+                        </div>
                     </div>
                 </div>
-            </div>
+            </details>
 
-            <!-- Tratamiento de Comentarios (Ocultar líneas //) -->
-            <div class="form-group border-section">
-                <div class="form-checkbox-group">
-                    <input type="checkbox" id="theme-check-comments" checked>
-                    <label for="theme-check-comments">Ocultar líneas de comentarios (//) en el proyector</label>
+            <!-- ACORDEÓN 3: CONTORNO DE LETRA -->
+            <details class="settings-group">
+                <summary>🎨 Contorno de Letras</summary>
+                <div class="group-content">
+                    <div class="form-checkbox-group">
+                        <input type="checkbox" id="theme-check-stroke">
+                        <label for="theme-check-stroke">Activar contorno de letras</label>
+                    </div>
+                    <div class="form-row stroke-controls hidden" id="stroke-controls-row">
+                        <div class="form-group">
+                            <label for="theme-stroke-color">Color contorno:</label>
+                            <input type="color" id="theme-stroke-color" value="#000000">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="theme-stroke-width">Grosor:</label>
+                                <span id="theme-stroke-width-val">1 px</span>
+                            </div>
+                            <input type="range" id="theme-stroke-width" min="1" max="5" step="0.5" value="1">
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </details>
 
-            <!-- Configuración del Fondo del Tema -->
-            <div class="form-group">
-                <label for="theme-bg-type">Tipo de Fondo:</label>
-                <select id="theme-bg-type">
-                    <option value="color">Color Sólido</option>
-                    <option value="image">Imagen de la USB</option>
-                    <option value="video">Loop de Video de la USB</option>
-                </select>
-            </div>
+            <!-- ACORDEÓN 4: CAJA DE RELLENO -->
+            <details class="settings-group">
+                <summary>⏹️ Caja de Relleno (Fondo Texto)</summary>
+                <div class="group-content">
+                    <div class="form-checkbox-group">
+                        <input type="checkbox" id="theme-check-fillbox">
+                        <label for="theme-check-fillbox">Activar caja de relleno única</label>
+                    </div>
+                    <div class="form-row fillbox-controls hidden" id="fillbox-controls-row">
+                        <div class="form-group">
+                            <label for="theme-fillbox-color">Color relleno:</label>
+                            <input type="color" id="theme-fillbox-color" value="#000000">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="theme-fillbox-opacity">Opacidad:</label>
+                                <span id="theme-fillbox-opacity-val">50 %</span>
+                            </div>
+                            <input type="range" id="theme-fillbox-opacity" min="0" max="1" step="0.1" value="0.5">
+                        </div>
+                    </div>
+                </div>
+            </details>
 
-            <div class="form-group" id="group-bg-media" style="display: none;">
-                <label for="theme-bg-media">Archivo de fondo:</label>
-                <select id="theme-bg-media"></select>
-            </div>
+            <!-- ACORDEÓN 5: ALINEACIÓN -->
+            <details class="settings-group">
+                <summary>⏺️ Alineación del Texto</summary>
+                <div class="group-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Horizontal:</label>
+                            <div class="align-grid" id="align-h-grid">
+                                <button class="btn-align" data-align="left" title="Izquierda">⬅</button>
+                                <button class="btn-align" data-align="center" title="Centro">⏺</button>
+                                <button class="btn-align" data-align="right" title="Derecha">➡</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Vertical:</label>
+                            <div class="align-grid" id="align-v-grid">
+                                <button class="btn-align" data-align="top" title="Arriba">▲</button>
+                                <button class="btn-align" data-align="center" title="Centro">⏺</button>
+                                <button class="btn-align" data-align="bottom" title="Abajo">▼</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
 
-            <div class="form-group" id="group-bg-color">
-                <label for="theme-bg-color">Color de fondo:</label>
-                <input type="color" id="theme-bg-color" value="#131316">
-            </div>
+            <!-- ACORDEÓN 6: TÍTULOS Y COMENTARIOS -->
+            <details class="settings-group">
+                <summary>📖 Títulos de Biblia y Notas</summary>
+                <div class="group-content">
+                    <div class="form-group">
+                        <label for="theme-title-pos">Ubicación de la cita bíblica:</label>
+                        <select id="theme-title-pos">
+                            <option value="top">Arriba del texto (Flotante)</option>
+                            <option value="bottom">Abajo del texto (Flotante)</option>
+                            <option value="bar-top">Fila de ancho completo (Arriba)</option>
+                            <option value="bar-bottom">Fila de ancho completo (Abajo)</option>
+                        </select>
+                    </div>
+                    <div class="form-row stroke-controls hidden" id="title-bar-controls-row">
+                        <div class="form-group">
+                            <label for="theme-title-bar-color">Color de faja:</label>
+                            <input type="color" id="theme-title-bar-color" value="#000000">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="theme-title-bar-opacity">Opacidad faja:</label>
+                                <span id="theme-title-bar-opacity-val">60 %</span>
+                            </div>
+                            <input type="range" id="theme-title-bar-opacity" min="0" max="1" step="0.1" value="0.6">
+                        </div>
+                    </div>
+                    <div class="form-checkbox-group" style="margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+                        <input type="checkbox" id="theme-check-comments" checked>
+                        <label for="theme-check-comments" style="font-size: 11px;">Ocultar comentarios (//) en proyección</label>
+                    </div>
+                </div>
+            </details>
+
+            <!-- ACORDEÓN 7: FONDO GENERAL DEL TEMA -->
+            <details class="settings-group">
+                <summary>🖼️ Fondo de Pantalla</summary>
+                <div class="group-content">
+                    <div class="form-group">
+                        <label for="theme-bg-type">Tipo de Fondo:</label>
+                        <select id="theme-bg-type">
+                            <option value="color">Color Sólido</option>
+                            <option value="image">Imagen de la USB</option>
+                            <option value="video">Loop de Video de la USB</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="group-bg-media" style="display: none;">
+                        <label for="theme-bg-media">Archivo de fondo:</label>
+                        <select id="theme-bg-media"></select>
+                    </div>
+                    <div class="form-group" id="group-bg-color">
+                        <label for="theme-bg-color">Color de fondo:</label>
+                        <input type="color" id="theme-bg-color" value="#131316">
+                    </div>
+                </div>
+            </details>
 
             <!-- Acciones -->
-            <div class="form-actions">
+            <div class="form-actions" style="margin-top: 10px; padding: 10px 0;">
                 <button id="btn-delete-theme" class="btn danger" style="flex: 0.8;" disabled>Eliminar</button>
                 <button id="btn-save-theme" class="btn primary" style="flex: 1.2;">Guardar Tema</button>
             </div>
@@ -225,26 +249,31 @@
     <div class="themes-preview-column">
         <div class="preview-header">
             <h2>Vista Previa del Tema</h2>
-            <p>Se actualiza en tiempo real al mover los controles de la columna central.</p>
+            <p>Se adapta automáticamente al ancho de la columna manteniendo la relación de aspecto 16:9.</p>
         </div>
         
         <div class="preview-display-container">
-            <!-- Caja de Proyección en Miniatura 16:9 -->
+            <!-- Caja de Proyección en Miniatura 16:9 con Container Queries -->
             <div id="theme-preview-box" class="theme-preview-box">
-                <!-- Capas de fondo simuladas -->
                 <video id="preview-bg-video" class="preview-bg" loop muted style="display: none;"></video>
                 <img id="preview-bg-image" class="preview-bg" style="display: none;">
                 
-                <!-- Letras centrándose de forma dinámica con Flexbox -->
+                <!-- Posiciones de Título Fijas de Ancho Completo -->
+                <div id="preview-title-bar-top" class="preview-title-bar-full" style="display: none;">Génesis 1:1</div>
+
                 <div id="preview-text-overlay" class="preview-text-overlay">
                     <!-- Caja de relleno de texto única (Bounding Box) -->
                     <div id="preview-text-box" class="preview-text-box">
-                        <!-- Cita de Biblia simulada (Título) -->
-                        <div id="preview-title-bar" class="preview-title-bar" style="display: none;">Génesis 1:1</div>
+                        <!-- Posiciones de Título Fijas Internas (Flotantes) -->
+                        <div id="preview-title-inline-top" class="preview-title-inline" style="display: none;">Génesis 1:1</div>
                         
                         <div id="preview-text-content">Sublime gracia del Señor<br>Que a un pecador salvó.</div>
+                        
+                        <div id="preview-title-inline-bottom" class="preview-title-inline" style="display: none;">Génesis 1:1</div>
                     </div>
                 </div>
+
+                <div id="preview-title-bar-bottom" class="preview-title-bar-full" style="display: none;">Génesis 1:1</div>
             </div>
         </div>
     </div>

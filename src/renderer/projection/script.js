@@ -1,20 +1,22 @@
+// Vincular los nuevos elementos de título del proyector al inicio del archivo
 const displayTexto = document.getElementById('texto-proyectado');
 const bgVideo = document.getElementById('proj-bg-video');
 const bgImage = document.getElementById('proj-bg-image');
 
-// Escuchar el canal de proyecciones
+const projTitleBarTop = document.getElementById('proj-title-bar-top');
+const projTitleBarBottom = document.getElementById('proj-title-bar-bottom');
+const projTitleInlineTop = document.getElementById('proj-title-inline-top');
+const projTitleInlineBottom = document.getElementById('proj-title-inline-bottom');
+
 window.api.alActualizarProyeccion((datos) => {
-        console.log("[Proyector Debug] Datos recibidos en tiempo real:", datos);
+    console.log("[Proyector Debug] Datos recibidos en tiempo real:", datos);
 
     // 1. MANEJAR LA CAPA DE FONDO MULTIMEDIA
     if (datos.background) {
-        // Formateamos la ruta absoluta local para que sea compatible con Chromium (evitando bloqueos de ruta)
-        const pathNormalizado = datos.background.path; 
-        
+        const pathNormalizado = datos.background.path;
         if (datos.background.type === 'video') {
             bgImage.style.display = 'none';
             bgImage.src = '';
-            
             bgVideo.src = pathNormalizado;
             bgVideo.style.display = 'block';
             bgVideo.play().catch(err => console.error("Error al reproducir video de fondo:", err));
@@ -22,7 +24,6 @@ window.api.alActualizarProyeccion((datos) => {
             bgVideo.style.display = 'none';
             bgVideo.pause();
             bgVideo.src = '';
-            
             bgImage.src = pathNormalizado;
             bgImage.style.display = 'block';
         }
@@ -32,9 +33,15 @@ window.api.alActualizarProyeccion((datos) => {
         clearActiveBackgrounds();
     }
 
-        // 2. MANEJAR ESTILOS AVANZADOS DEL TEMA EMITIDO
+    // 2. MANEJAR ESTILOS AVANZADOS DEL TEMA EMITIDO
     if (datos.estilo) {
         const est = datos.estilo;
+
+        if (est.bgType === 'color') {
+            document.body.style.backgroundColor = est.bgPath || '#000000';
+        } else {
+            document.body.style.backgroundColor = '#000000';
+        }
 
         // Estilos de tipografía
         displayTexto.style.fontFamily = est.fontFamily || 'Segoe UI';
@@ -47,7 +54,6 @@ window.api.alActualizarProyeccion((datos) => {
         displayTexto.style.fontStyle = est.isItalic ? 'italic' : 'normal';
         displayTexto.style.textTransform = est.isUppercase ? 'uppercase' : 'none';
 
-        // Sombra
         displayTexto.style.textShadow = est.textShadowColor ? `2px 2px 8px ${est.textShadowColor}` : '2px 2px 8px rgba(0,0,0,0.9)';
 
         // Contorno (Stroke)
@@ -58,10 +64,9 @@ window.api.alActualizarProyeccion((datos) => {
         }
 
         // Caja de relleno de texto única (Bounding Box)
-        const textBox = document.getElementById('preview-text-box') || document.querySelector('.preview-text-box');
+        const textBox = document.getElementById('proj-text-box');
         if (textBox) {
             if (est.hasFillBox) {
-                // Función inline de conversión hex a rgba
                 const num = parseInt(est.fillBoxColorHex.replace("#", ""), 16);
                 const R = (num >> 16);
                 const G = (num >> 8 & 0x00FF);
@@ -77,8 +82,48 @@ window.api.alActualizarProyeccion((datos) => {
             }
         }
 
+        // --- LOGICA DE COMODATO DE TÍTULOS ---
+        // Apagamos todos los títulos primero
+        projTitleBarTop.style.display = 'none';
+        projTitleBarBottom.style.display = 'none';
+        projTitleInlineTop.style.display = 'none';
+        projTitleInlineBottom.style.display = 'none';
+
+        if (datos.esBiblia && datos.cita) {
+            const tPos = est.verseTitlePos || 'top';
+            
+            if (tPos === 'top') {
+                projTitleInlineTop.textContent = datos.cita;
+                projTitleInlineTop.style.display = 'block';
+                projTitleInlineTop.style.color = est.fontColor || '#ffffff';
+            } else if (tPos === 'bottom') {
+                projTitleInlineBottom.textContent = datos.cita;
+                projTitleInlineBottom.style.display = 'block';
+                projTitleInlineBottom.style.color = est.fontColor || '#ffffff';
+            } else if (tPos.startsWith('bar-')) {
+                // Función inline de conversión hex a rgba para el fondo de la faja
+                const num = parseInt(est.titleBarColorHex.replace("#", ""), 16);
+                const R = (num >> 16);
+                const G = (num >> 8 & 0x00FF);
+                const B = (num & 0x0000FF);
+                const rgbaBarColor = `rgba(${R}, ${G}, ${B}, ${est.titleBarOpacity})`;
+
+                if (tPos === 'bar-top') {
+                    projTitleBarTop.textContent = datos.cita;
+                    projTitleBarTop.style.display = 'block';
+                    projTitleBarTop.style.backgroundColor = rgbaBarColor;
+                    projTitleBarTop.style.color = '#ffffff';
+                } else if (tPos === 'bar-bottom') {
+                    projTitleBarBottom.textContent = datos.cita;
+                    projTitleBarBottom.style.display = 'block';
+                    projTitleBarBottom.style.backgroundColor = rgbaBarColor;
+                    projTitleBarBottom.style.color = '#ffffff';
+                }
+            }
+        }
+
         // Alineación Horizontal con Flexbox
-        const overlay = document.getElementById('preview-text-overlay') || document.querySelector('.preview-text-overlay') || document.querySelector('.display-container');
+        const overlay = document.getElementById('proj-text-overlay');
         if (overlay) {
             if (est.alignH === 'left') {
                 overlay.style.justifyContent = 'flex-start';
@@ -115,19 +160,22 @@ window.api.alActualizarProyeccion((datos) => {
     }
 });
 
-// Al presionar ESC: Oculta texto y apaga el fondo activo (dejando la pantalla negra temporalmente)
+// Al presionar ESC: Oculta texto, fajas de título y limpia fondos
 window.api.alLimpiarPantalla(() => {
-    // Limpiar texto con desvanecimiento
     displayTexto.classList.remove('active');
     setTimeout(() => {
         displayTexto.textContent = '';
     }, 300);
-    
-    // Limpiar fondos multimedia activos
+
+    // Apagar fajas de títulos
+    projTitleBarTop.style.display = 'none';
+    projTitleBarBottom.style.display = 'none';
+    projTitleInlineTop.style.display = 'none';
+    projTitleInlineBottom.style.display = 'none';
+
     clearActiveBackgrounds();
 });
 
-// Función de limpieza de fondos
 function clearActiveBackgrounds() {
     bgVideo.style.display = 'none';
     bgVideo.pause();
