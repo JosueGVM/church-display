@@ -1,0 +1,76 @@
+<div class="settings-container">
+    <h2 class="settings-title">Configuración General</h2>
+
+    <div class="settings-grid">
+        <!-- BLOQUE 1: PANTALLAS Y PROYECCIÓN -->
+        <div class="settings-card">
+            <h3>🖥️ Pantallas y Proyección</h3>
+            <p>Monitores y proyectores detectados físicamente en el sistema:</p>
+            
+            <ul id="screen-list" class="display-list">
+                <li>Detectando pantallas...</li>
+            </ul>
+
+            <div class="btn-group">
+                <button id="btn-redetect-screens" class="btn secondary">Redetectar Pantallas</button>
+                <button id="btn-toggle-projection" class="btn primary">Abrir Proyección</button>
+            </div>
+        </div>
+
+        <!-- BLOQUE 2: CONFIGURACIÓN DE INICIO Y NAVEGACIÓN -->
+        <div class="settings-card">
+            <h3>⚙️ Inicio y Navegación</h3>
+            <div class="form-group">
+                <label for="select-start-tab">Pestaña de inicio por defecto:</label>
+                <select id="select-start-tab">
+                    <option value="welcome">Tutorial de Bienvenida</option>
+                    <option value="bible">Modo Biblia</option>
+                    <option value="songs">Modo Canciones</option>
+                    <option value="media">Modo Multimedia</option>
+                </select>
+            </div>
+
+            <!-- Checkbox para ocultar el tutorial del sidebar -->
+            <div class="form-checkbox-group">
+                <input type="checkbox" id="check-hide-welcome">
+                <label for="check-hide-welcome">Ocultar el icono de Tutorial de la barra lateral</label>
+            </div>
+
+            <div class="btn-group" style="margin-top: 15px;">
+                <button id="btn-view-welcome" class="btn secondary" style="width: 100%;">Ver Tutorial de Inicio Ahora</button>
+            </div>
+        </div>
+
+        <!-- BLOQUE 3: MEDIOS PREDETERMINADOS (Próximamente) -->
+        <div class="settings-card">
+            <h3>🖼️ Fondos Predeterminados y Logo</h3>
+            <div class="form-group">
+                <label for="input-default-bg">Fondo de pantalla predeterminado (Imagen/Video):</label>
+                <input type="text" id="input-default-bg" placeholder="Ej: database/media/images/fondo.webp" disabled>
+            </div>
+            <div class="form-group">
+                <label for="input-default-logo">Logotipo oficial de la Iglesia (PNG/JPG):</label>
+                <input type="text" id="input-default-logo" placeholder="Ej: database/media/images/logo.png" disabled>
+            </div>
+            <p class="card-note">★ Estos recursos se mostrarán al iniciar la app o al presionar ESC. Próximamente configurables de forma interactiva.</p>
+        </div>
+
+        <!-- BLOQUE 4: PREFERENCIAS EXTRAS (Placeholders) -->
+        <div class="settings-card info-card">
+            <h3>🔌 Red y Sonido</h3>
+            <p class="card-placeholder-text">🔊 Configuración de salida de Audio - Próximamente.</p>
+            <p class="card-placeholder-text">🌐 Servidor de red para control remoto móvil - Próximamente.</p>
+        </div>
+
+        <!-- BLOQUE 5: AYUDA Y CRÉDITOS -->
+        <div class="settings-card info-card">
+            <h3>ℹ️ Acerca de</h3>
+            <p><strong>Church Display</strong> v1.0.0</p>
+            <p>Desarrollado bajo licencia de código abierto con una arquitectura portátil USB.</p>
+            <p style="margin-top: 10px; font-size: 11px; color: var(--text-secondary);">Copyright © 2026 JosueGVM. Todos los derechos reservados.</p>
+        </div>
+    </div>
+
+    <!-- Mensaje de Estado inferior -->
+    <div id="settings-save-status" class="settings-status-msg"></div>
+</div>

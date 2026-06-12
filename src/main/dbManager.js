@@ -21,8 +21,11 @@ const IMAGES_DIR = path.join(MEDIA_DIR, 'images');
 const VIDEOS_DIR = path.join(MEDIA_DIR, 'videos');
 const AUDIO_DIR = path.join(MEDIA_DIR, 'audio');
 
+// Carpeta de Fonts Portátiles
+const FONTS_DIR = path.join(DB_DIR, 'fonts');
+
 // Asegurar la existencia física de todas las carpetas portátiles
-[DB_DIR, MEDIA_DIR, IMAGES_DIR, VIDEOS_DIR, AUDIO_DIR].forEach(dir => {
+[DB_DIR, MEDIA_DIR, IMAGES_DIR, VIDEOS_DIR, AUDIO_DIR, FONTS_DIR].forEach(dir => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
@@ -142,7 +145,27 @@ function importMediaFile(sourcePath, type) {
 function getSettings() {
     try {
         if (!fs.existsSync(SETTINGS_JSON_PATH)) {
-            const defaultSettings = { startTab: 'welcome' };
+            const defaultSettings = { 
+                startTab: 'welcome',
+                hideWelcomeIcon: false,
+                defaultBibleTheme: 'default',
+                defaultSongsTheme: 'default',
+                defaultNotesTheme: 'default',
+                themes: [{
+                    id: 'default',
+                    name: 'Tema Predeterminado',
+                    fontFamily: 'Segoe UI',
+                    fontSize: 5,         // Medido en vh (Porcentaje de alto de pantalla)
+                    fontColor: '#ffffff',
+                    textShadow: '2px 2px 8px rgba(0,0,0,0.9)',
+                    alignH: 'center',    // left, center, right
+                    alignV: 'center',    // top, center, bottom
+                    bgType: 'color',     // color, image, video
+                    bgPath: '#131316'
+                }
+                ],
+                songsThemes: {}
+            };
             fs.writeFileSync(SETTINGS_JSON_PATH, JSON.stringify(defaultSettings, null, 2));
             return defaultSettings;
         }
@@ -269,6 +292,29 @@ function deleteMediaFile(filePath) {
     }
 }
 
+// Escanear físicamente la carpeta de fuentes de la USB y listar archivos .ttf y .otf
+function scanFontsFolder() {
+    try {
+        const files = fs.readdirSync(FONTS_DIR);
+        const fontFiles = files
+            .filter(file => file.endsWith('.ttf') || file.endsWith('.otf'))
+            .map(file => {
+                const absolutePath = path.join(FONTS_DIR, file);
+                return {
+                    // Nombre de la fuente sin extensión para registrarla en la UI
+                    name: path.basename(file, path.extname(file)),
+                    fileName: file,
+                    path: absolutePath,
+                    url: url.pathToFileURL(absolutePath).href // URL codificada file:///
+                };
+            });
+        return { success: true, fonts: fontFiles };
+    } catch (err) {
+        console.error("Error al escanear carpeta de fuentes:", err);
+        return { success: false, fonts: [], error: err.message };
+    }
+}
+
 module.exports = {
     initDatabases,
     searchVerses,
@@ -283,6 +329,7 @@ module.exports = {
     saveWebPImage,  
     importMediaFile,
     deleteMediaFile,
+    scanFontsFolder,
     getBiblesDb,
     getSongsDb
 };

@@ -77,6 +77,23 @@ function setupIpcHandlers() {
     ipcMain.handle('db:delete-media', async (event, filePath) => {
         return dbManager.deleteMediaFile(filePath);
     });
+    // 6. Obtener las pantallas conectadas físicamente al sistema
+    ipcMain.handle('screen:get-displays', async () => {
+        const { screen } = require('electron');
+        return screen.getAllDisplays().map((display, index) => {
+            return {
+                id: display.id,
+                indice: index + 1,
+                esPrincipal: display.bounds.x === 0 && display.bounds.y === 0,
+                width: display.bounds.width,
+                height: display.bounds.height
+            };
+        });
+    });
+    // 7. Obtener tipografías portátiles del sistema (.ttf/.otf)
+    ipcMain.handle('screen:get-fonts', async () => {
+        return dbManager.scanFontsFolder();
+    });
 }
 
 

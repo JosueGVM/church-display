@@ -2,13 +2,27 @@ const mainContent = document.getElementById('main-content');
 const navButtons = document.querySelectorAll('.nav-btn');
 const tabStylesheet = document.getElementById('tab-stylesheet');
 
-// Ruta base donde se guardarán las pestañas
 const TABS_PATH = '../tabs';
+
+// Función para ocultar o mostrar el icono de Tutorial según la configuración
+function applySidebarSettings(settings) {
+    const welcomeBtn = document.querySelector('.nav-btn[data-tab="welcome"]');
+    const separator = document.querySelector('.sidebar-separator');
+
+    if (welcomeBtn && separator) {
+        if (settings && settings.hideWelcomeIcon) {
+            welcomeBtn.style.display = 'none';
+            separator.style.display = 'none';
+        } else {
+            welcomeBtn.style.display = 'flex';
+            separator.style.display = 'block';
+        }
+    }
+}
 
 // Función para cambiar de pestaña e inyectar recursos dinámicamente
 async function selectTab(tabName) {
     try {
-        // 1. Actualizar el estado visual del Sidebar
         navButtons.forEach(btn => {
             if (btn.dataset.tab === tabName) {
                 btn.classList.add('active');
@@ -17,26 +31,21 @@ async function selectTab(tabName) {
             }
         });
 
-        // 2. Inyectar la hoja de estilos CSS de la pestaña activa
         tabStylesheet.href = `${TABS_PATH}/${tabName}/style.css`;
 
-        // 3. Descargar e inyectar el HTML de la pestaña
         const response = await fetch(`${TABS_PATH}/${tabName}/view.html`);
         if (!response.ok) throw new Error(`No se pudo cargar la vista de la pestaña: ${tabName}`);
         
         const html = await response.text();
         mainContent.innerHTML = html;
 
-        // 4. Importar y ejecutar dinámicamente la lógica JS de la pestaña
-        // Usamos try/catch porque pestañas estáticas como "welcome" no necesitan JS obligatorio
         try {
             const module = await import(`${TABS_PATH}/${tabName}/script.js`);
             if (module && typeof module.init === 'function') {
                 module.init();
             }
         } catch (jsError) {
-            // Nota de depuración por si la pestaña no contiene o no requiere script.js
-            console.warn(`[Router Debug] Error al inicializar la lógica de "${tabName}":`, jsError);
+            console.log(`[Router] Pestaña "${tabName}" cargada (sin lógica JS activa).`);
         }
 
     } catch (error) {
@@ -50,7 +59,7 @@ async function selectTab(tabName) {
     }
 }
 
-// Escuchar los clics del sidebar para cambiar de pestaña
+// Escuchar los clics del sidebar
 navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         const tabName = btn.dataset.tab;
@@ -58,11 +67,18 @@ navButtons.forEach(btn => {
     });
 });
 
+// ESCUCHAR EN TIEMPO REAL SI SE CAMBIA LA CONFIGURACIÓN DESDE SETTINGS
+window.addEventListener('settings-updated', async () => {
+    const settings = await window.api.getSettings();
+    applySidebarSettings(settings);
+});
+
 // Cargar la pestaña configurada de inicio al arrancar la app
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         const settings = await window.api.getSettings();
-        // Si no hay configuración o dice 'welcome', carga el tutorial; si no, abre el modo directamente
+        applySidebarSettings(settings); // Aplicamos visibilidad del icono al arrancar
+        
         const startTab = (settings && settings.startTab) ? settings.startTab : 'welcome';
         selectTab(startTab);
     } catch (err) {
@@ -70,3 +86,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         selectTab('welcome');
     }
 });
+
+// EXPORTAR selectTab para permitir que pestañas internas fuercen la redirección
+export { selectTab };

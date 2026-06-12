@@ -31,5 +31,10 @@ contextBridge.exposeInMainWorld('api', {
     scanMedia: () => ipcRenderer.invoke('db:scan-media'),
     saveWebP: (params) => ipcRenderer.invoke('db:save-webp', params),
     importMedia: (params) => ipcRenderer.invoke('db:import-media', params),
-    deleteMedia: (filePath) => ipcRenderer.invoke('db:delete-media', filePath)
+    deleteMedia: (filePath) => ipcRenderer.invoke('db:delete-media', filePath),
+
+    // Gestión de Pantallas y Proyección dinámicas (settings)
+    getDisplays: () => ipcRenderer.invoke('screen:get-displays'),
+    toggleProjection: (accion) => ipcRenderer.invoke('projection:toggle', accion),
+    getFonts: () => ipcRenderer.invoke('screen:get-fonts')
 });

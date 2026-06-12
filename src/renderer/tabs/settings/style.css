@@ -1,0 +1,135 @@
+.settings-container {
+    padding: 30px;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.settings-title {
+    margin: 0;
+    font-size: 26px;
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.settings-grid {
+    display: grid;
+    /* Cuadrícula adaptativa de mínimo 300px por columna */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.settings-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+}
+
+.settings-card h3 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    color: #fff;
+}
+
+.settings-card p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Lista de pantallas detectadas */
+.display-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+    background-color: #141417;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.display-list li {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-color);
+    color: #fff;
+}
+.display-list li:last-child {
+    border-bottom: none;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-group button {
+    flex: 1;
+}
+
+/* Formulario */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.form-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    user-select: none;
+}
+
+.form-checkbox-group input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.form-checkbox-group label {
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.card-note {
+    font-size: 11px !important;
+    color: var(--text-secondary) !important;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 8px;
+}
+
+.info-card {
+    border-left: 3px solid var(--text-secondary);
+}
+
+.card-placeholder-text {
+    margin-bottom: 8px !important;
+}
+
+.settings-status-msg {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #2ec4b6;
+    height: 20px;
+    font-weight: bold;
+}

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, screen } = require('electron');
+const { app, BrowserWindow, screen, ipcMain } = require('electron');
 const path = require('path');
 const { setupIpcHandlers } = require('./ipcHandlers');
 const { initDatabases } = require('./dbManager');
@@ -89,6 +89,22 @@ app.whenReady().then(() => {
     setupIpcHandlers(); 
     createControlWindow();
     createProjectionWindow();
+
+    // --- MANEJADOR DE APERTURA/CIERRE DE PROYECCIÓN BAJO DEMANDA ---
+    ipcMain.handle('projection:toggle', (event, accion) => {
+        if (accion === 'open') {
+            if (!projectionWindow) {
+                createProjectionWindow();
+            }
+        } else if (accion === 'close') {
+            if (projectionWindow) {
+                projectionWindow.close();
+                projectionWindow = null;
+            }
+        }
+        // Devuelve el estado actual (true = abierto, false = cerrado)
+        return { abierta: projectionWindow !== null };
+    });
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
