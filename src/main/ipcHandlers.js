@@ -60,6 +60,23 @@ function setupIpcHandlers() {
     ipcMain.handle('db:delete-song', async (event, id) => {
         return dbManager.deleteSong(id);
     });
+
+    // 5. Manejadores para el Modo Multimedia portátiles (Copiado de archivos y escáner)
+    ipcMain.handle('db:scan-media', async () => {
+        return dbManager.scanMediaFolder();
+    });
+
+    ipcMain.handle('db:save-webp', async (event, { fileName, base64Data }) => {
+        return dbManager.saveWebPImage(fileName, base64Data);
+    });
+
+    ipcMain.handle('db:import-media', async (event, { sourcePath, type }) => {
+        return dbManager.importMediaFile(sourcePath, type);
+    });
+
+    ipcMain.handle('db:delete-media', async (event, filePath) => {
+        return dbManager.deleteMediaFile(filePath);
+    });
 }
 
 

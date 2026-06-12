@@ -1,0 +1,62 @@
+<div class="media-layout">
+    <!-- Entrada de archivos oculta para importar desde el sistema -->
+    <input type="file" id="media-file-input" accept="image/*,video/*,audio/*" multiple style="display: none;">
+
+    <!-- COLUMNA 1: Catálogo de Medios Importados -->
+    <div class="media-column catalog-column">
+        <div class="column-header">
+            <input type="text" id="media-search" placeholder="Buscar medios...">
+            <button id="btn-import-media" class="btn-add-cat" title="Importar Archivos">+</button>
+        </div>
+        <div class="column-scroll-container">
+            <ul id="media-catalog-list"></ul>
+        </div>
+    </div>
+
+    <!-- COLUMNA 2: Cronograma / Playlist de la Sesión -->
+    <div class="media-column cronograma-column">
+        <div class="column-header-title">
+            <h3>Cronograma</h3>
+            <button id="btn-clear-cronograma" class="btn-clear" title="Vaciar Cronograma">Vaciar</button>
+        </div>
+        <div id="cronograma-drop-zone" class="column-scroll-container drop-zone">
+            <ul id="media-cronograma-list"></ul>
+        </div>
+    </div>
+
+    <!-- COLUMNA 3: Previsualizador y Controles del Operador -->
+    <div class="media-player-column">
+        <div class="player-header">
+            <h2 id="current-media-title">Ningún medio seleccionado</h2>
+            <p id="current-media-type"></p>
+        </div>
+        
+        <!-- Área del Reproductor / Visor del Operador -->
+        <div class="player-viewer-container">
+            <div id="player-preview-box" class="player-preview-box">
+                <!-- Previsualizador de Imagen -->
+                <img id="preview-image" class="preview-asset" style="display: none;">
+                
+                <!-- Previsualizador de Video -->
+                <video id="preview-video" class="preview-asset" controls muted style="display: none;"></video>
+                
+                <!-- Previsualizador de Audio (Con diseño de tarjeta de música) -->
+                <div id="preview-audio-container" class="preview-audio-card" style="display: none;">
+                    <span class="audio-card-icon">🎵</span>
+                    <audio id="preview-audio" controls style="width: 100%; max-width: 250px;"></audio>
+                </div>
+                
+                <!-- Estado vacío -->
+                <div id="preview-empty-msg" class="preview-empty-msg">
+                    <span>Sin Vista Previa</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botonera de Acción en Vivo -->
+        <div class="player-footer">
+            <button id="btn-clear-bg" class="btn danger">Quitar Fondo Proyectado</button>
+            <button id="btn-project-media" class="btn primary">Proyectar Medio</button>
+        </div>
+    </div>
+</div>

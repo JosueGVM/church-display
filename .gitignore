@@ -13,6 +13,7 @@ database/*.db
 database/*.sqlite
 database/*.json
 !database/.gitkeep
+database/media/
 
 # Archivos del sistema
 .DS_Store
@@ -25,3 +26,10 @@ Thumbs.db
 *.ntvs
 *.njsproj
 *.sln
+
+# Seguridad doble contra archivos multimedia accidentales fuera de la carpeta media
+*.mp4
+*.mov
+*.mp3
+*.wav
+*.webp

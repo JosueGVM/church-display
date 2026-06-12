@@ -1,0 +1,356 @@
+.media-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    gap: 15px;
+    padding: 15px;
+    position: relative;
+}
+
+/* ================= COMPARTIDO POR COLUMNAS 1 Y 2 ================= */
+.media-column {
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px; /* Columnas estáticas fijas */
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.column-header {
+    background-color: #16161b;
+    border-bottom: 1px solid var(--border-color);
+    padding: 8px 10px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.column-header input {
+    flex-grow: 1;
+    font-size: 13px;
+    padding: 8px;
+}
+
+.column-header-title {
+    background-color: #16161b;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.column-header-title h3 {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-add-cat {
+    background-color: var(--accent);
+    color: #fff;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-add-cat:hover { background-color: var(--accent-hover); }
+
+.btn-clear {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--danger);
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.btn-clear:hover { background-color: rgba(217, 83, 79, 0.1); }
+
+.column-scroll-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+/* Scrollbars minimalistas */
+.column-scroll-container::-webkit-scrollbar, .player-viewer-container::-webkit-scrollbar {
+    width: 6px;
+}
+.column-scroll-container::-webkit-scrollbar-track, .player-viewer-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+.column-scroll-container::-webkit-scrollbar-thumb, .player-viewer-container::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 10px;
+}
+.column-scroll-container::-webkit-scrollbar-thumb:hover, .player-viewer-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent);
+}
+
+/* --- Lista de Catálogo (Columna 1) --- */
+#media-catalog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 8px;
+}
+
+#media-catalog-list li {
+    padding: 10px;
+    background-color: #1a1a20;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: grab;
+    transition: all 0.15s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#media-catalog-list li:hover {
+    border-color: var(--accent);
+    background-color: rgba(255, 255, 255, 0.02);
+}
+#media-catalog-list li .media-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 80%;
+}
+#media-catalog-list li .media-icon-badge {
+    font-size: 16px;
+    user-select: none;
+}
+#media-catalog-list li .media-info-text {
+    flex-grow: 1;
+    overflow: hidden;
+}
+#media-catalog-list li h4 {
+    margin: 0 0 2px 0;
+    font-size: 12px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#media-catalog-list li p {
+    margin: 0;
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.cat-btn-add {
+    background: none;
+    border: none;
+    color: #2ec4b6;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+/* --- Lista de Cronograma (Columna 2) --- */
+#media-cronograma-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 8px;
+    min-height: 100%;
+}
+
+.cronograma-item {
+    padding: 8px 10px;
+    background-color: #1a1a20;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: grab;
+    transition: border-color 0.15s ease;
+}
+.cronograma-item:hover {
+    border-color: var(--accent);
+}
+.cronograma-item.active-item {
+    border-color: var(--accent);
+    background-color: rgba(0, 122, 204, 0.05);
+}
+
+.cronograma-item-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 8px;
+}
+
+/* Controles de Cronograma */
+.cronograma-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-move {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 2px;
+}
+.btn-move:hover { color: #fff; }
+
+.btn-remove-cron {
+    background: none;
+    border: none;
+    color: var(--danger);
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.drop-zone.drag-over {
+    background-color: rgba(0, 122, 204, 0.04);
+    border: 2px dashed var(--accent);
+    border-radius: 6px;
+}
+
+
+/* ================= COLUMNA 3 (REPRODUCTOR / VISOR) ================= */
+.media-player-column {
+    flex: 1;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.player-header {
+    padding: 12px 20px;
+    background-color: rgba(255, 255, 255, 0.01);
+    border-bottom: 1px solid var(--border-color);
+}
+.player-header h2 {
+    margin: 0 0 2px 0;
+    font-size: 16px;
+    color: #fff;
+}
+.player-header p {
+    margin: 0;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* Contenedor del Reproductor */
+.player-viewer-container {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #101014;
+}
+
+/* El cuadro simula una pantalla de proyección 16:9 */
+.player-preview-box {
+    width: 100%;
+    max-width: 550px;
+    aspect-ratio: 16 / 9;
+    background-color: #000;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    box-sizing: border-box;
+}
+
+/* El elemento LIVE en el reproductor (Indica que está transmitiéndose) */
+.player-preview-box.live {
+    border-color: #d9534f;
+    box-shadow: 0 0 10px rgba(217, 83, 79, 0.25);
+}
+
+.preview-asset {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ajusta la imagen o video respetando su tamaño original */
+}
+
+/* Tarjeta minimalista de Audio */
+.preview-audio-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a20;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.audio-card-icon {
+    font-size: 50px;
+    animation: rotateDisc 15s linear infinite; /* Animación sutil de rotación */
+    animation-play-state: paused;
+}
+
+.preview-audio-card.playing .audio-card-icon {
+    animation-play-state: running; /* Rota solo cuando se reproduce */
+}
+
+@keyframes rotateDisc {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.preview-empty-msg {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: bold;
+    user-select: none;
+}
+
+/* Botonera inferior */
+.player-footer {
+    background-color: #16161b;
+    border-top: 1px solid var(--border-color);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}

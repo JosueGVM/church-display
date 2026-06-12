@@ -10,10 +10,15 @@
 <body>
 
     <div class="display-container">
-        <!-- Contenedor donde se renderizará el texto recibido -->
-        <div id="texto-proyectado" class="fade-in"></div>
+        <!-- CAPA DE FONDO: Loop de Video (silenciado y con reproducción automática) -->
+        <video id="proj-bg-video" class="proj-bg" loop muted style="display: none;"></video>
+        
+        <!-- CAPA DE FONDO: Imagen estática -->
+        <img id="proj-bg-image" class="proj-bg" style="display: none;">
+        
+        <!-- CAPA DE CONTENIDO: El texto proyectado encima -->
+        <div id="texto-proyectado"></div>
     </div>
-
 
     <script src="script.js"></script>
 </body>

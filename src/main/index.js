@@ -3,6 +3,8 @@ const path = require('path');
 const { setupIpcHandlers } = require('./ipcHandlers');
 const { initDatabases } = require('./dbManager');
 
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+
 let controlWindow = null;
 let projectionWindow = null;
 
@@ -16,7 +18,8 @@ function createControlWindow() {
         webPreferences: {
             preload: path.join(__dirname, '../preload/controlPreload.js'),
             contextIsolation: true,
-            nodeIntegration: false
+            nodeIntegration: false,
+            webSecurity: false
         }
     });
 
@@ -52,7 +55,9 @@ function createProjectionWindow() {
             webPreferences: {
                 preload: path.join(__dirname, '../preload/projectionPreload.js'),
                 contextIsolation: true,
-                nodeIntegration: false
+                nodeIntegration: false,
+                webSecurity: false,
+                backgroundThrottling: false
             }
         });
     } else {

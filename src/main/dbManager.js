@@ -1,16 +1,32 @@
-const sqlite3 = require('sqlite3').verbose();
+const { app } = require('electron'); // Importamos app para calcular la portabilidad
+const sqlite3 = require('sqlite3').verbose(); // Usamos la de Microsoft precompilada
 const path = require('path');
 const fs = require('fs');
+const url = require('url');
 
-// Rutas de las bases de datos en la carpeta /database
-const DB_DIR = path.join(__dirname, '../../database');
+// --- CÁLCULO DE PORTABILIDAD DINÁMICO ---
+// Si la aplicación está empaquetada (.isPackaged), la ruta será al lado del archivo .exe (USB)
+// Si está en desarrollo, se guardará en la carpeta raíz de tu código
+const DB_DIR = app.isPackaged 
+    ? path.join(path.dirname(app.getPath('exe')), 'database')
+    : path.join(__dirname, '../../database');
+
 const BIBLES_DB_PATH = path.join(DB_DIR, 'bibles.db');
 const SONGS_DB_PATH = path.join(DB_DIR, 'songs.db');
+const SETTINGS_JSON_PATH = path.join(DB_DIR, 'settings.json');
 
-// Asegurar que la carpeta 'database' exista
-if (!fs.existsSync(DB_DIR)) {
-    fs.mkdirSync(DB_DIR, { recursive: true });
-}
+// Carpetas de Medios Portátiles
+const MEDIA_DIR = path.join(DB_DIR, 'media');
+const IMAGES_DIR = path.join(MEDIA_DIR, 'images');
+const VIDEOS_DIR = path.join(MEDIA_DIR, 'videos');
+const AUDIO_DIR = path.join(MEDIA_DIR, 'audio');
+
+// Asegurar la existencia física de todas las carpetas portátiles
+[DB_DIR, MEDIA_DIR, IMAGES_DIR, VIDEOS_DIR, AUDIO_DIR].forEach(dir => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+});
 
 let biblesDb = null;
 let songsDb = null;
@@ -22,7 +38,6 @@ function initDatabases() {
             console.error('Error al conectar con bibles.db:', err.message);
         } else {
             console.log('Conectado a bibles.db con éxito.');
-            // Crear tabla de versículos si no existe
             biblesDb.run(`CREATE TABLE IF NOT EXISTS bible_verses (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 version TEXT,
@@ -40,7 +55,6 @@ function initDatabases() {
             console.error('Error al conectar con songs.db:', err.message);
         } else {
             console.log('Conectado a songs.db con éxito.');
-            // Crear tabla de canciones si no existe
             songsDb.run(`CREATE TABLE IF NOT EXISTS songs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
@@ -52,12 +66,107 @@ function initDatabases() {
     });
 }
 
-// Funciones de consulta para las Biblias
+// --- LOGICA DE MEDIOS PORTÁTILES Y DETECCIÓN EN TIEMPO REAL ---
+// Escanear físicamente las carpetas de medios y listar los archivos para el catálogo (Columna 1)
+function scanMediaFolder() {
+    try {
+        const images = fs.readdirSync(IMAGES_DIR).map(file => {
+            const fullPath = path.join(IMAGES_DIR, file); // Nombre corto y limpio
+            return {
+                name: file,
+                path: fullPath,
+                url: url.pathToFileURL(fullPath).href, // URL codificada
+                type: 'image'
+            };
+        });
+        
+        const videos = fs.readdirSync(VIDEOS_DIR).map(file => {
+            const fullPath = path.join(VIDEOS_DIR, file);
+            return {
+                name: file,
+                path: fullPath,
+                url: url.pathToFileURL(fullPath).href,
+                type: 'video'
+            };
+        });
+        
+        const audios = fs.readdirSync(AUDIO_DIR).map(file => {
+            const fullPath = path.join(AUDIO_DIR, file);
+            return {
+                name: file,
+                path: fullPath,
+                url: url.pathToFileURL(fullPath).href,
+                type: 'audio'
+            };
+        });
+
+        return { success: true, files: [...images, ...videos, ...audios] };
+    } catch (err) {
+        console.error("Error al escanear carpeta de medios:", err);
+        return { success: false, files: [], error: err.message };
+    }
+}
+
+// Guardar imágenes convertidas a WebP (Recibe Base64 de la UI y lo guarda físicamente)
+function saveWebPImage(fileName, base64Data) {
+    try {
+        const cleanBase64 = base64Data.replace(/^data:image\/\w+;base64,/, "");
+        const buffer = Buffer.from(cleanBase64, 'base64');
+        const targetPath = path.join(IMAGES_DIR, fileName);
+        
+        fs.writeFileSync(targetPath, buffer);
+        return { success: true, fileName, path: targetPath };
+    } catch (err) {
+        console.error("Error al escribir imagen WebP:", err);
+        return { success: false, error: err.message };
+    }
+}
+
+// Copiar físicamente videos o audios importados a las carpetas portátiles de la USB
+function importMediaFile(sourcePath, type) {
+    try {
+        const fileName = path.basename(sourcePath);
+        const targetFolder = type === 'video' ? VIDEOS_DIR : AUDIO_DIR;
+        const targetPath = path.join(targetFolder, fileName);
+        
+        // Copiado síncrono y directo al directorio de la USB
+        fs.copyFileSync(sourcePath, targetPath);
+        return { success: true, fileName, path: targetPath };
+    } catch (err) {
+        console.error("Error al copiar archivo multimedia:", err);
+        return { success: false, error: err.message };
+    }
+}
+
+// --- GESTIÓN DE CONFIGURACIÓN ---
+function getSettings() {
+    try {
+        if (!fs.existsSync(SETTINGS_JSON_PATH)) {
+            const defaultSettings = { startTab: 'welcome' };
+            fs.writeFileSync(SETTINGS_JSON_PATH, JSON.stringify(defaultSettings, null, 2));
+            return defaultSettings;
+        }
+        const data = fs.readFileSync(SETTINGS_JSON_PATH, 'utf8');
+        return JSON.parse(data);
+    } catch (err) {
+        return { startTab: 'welcome' };
+    }
+}
+
+function saveSettings(settings) {
+    try {
+        fs.writeFileSync(SETTINGS_JSON_PATH, JSON.stringify(settings, null, 2));
+        return { success: true };
+    } catch (err) {
+        return { success: false, error: err.message };
+    }
+}
+
+// --- BÚSQUEDAS BÍBLICAS ---
 function searchVerses(version, book, chapter, verseStart, verseEnd) {
     return new Promise((resolve, reject) => {
         let query = `SELECT * FROM bible_verses WHERE version = ? AND book_name = ? AND chapter = ?`;
         let params = [version, book, chapter];
-
         if (verseStart && verseEnd) {
             query += ` AND verse_number BETWEEN ? AND ?`;
             params.push(verseStart, verseEnd);
@@ -65,9 +174,7 @@ function searchVerses(version, book, chapter, verseStart, verseEnd) {
             query += ` AND verse_number = ?`;
             params.push(verseStart);
         }
-
         query += ` ORDER BY verse_number ASC`;
-
         biblesDb.all(query, params, (err, rows) => {
             if (err) reject(err);
             else resolve(rows);
@@ -75,10 +182,6 @@ function searchVerses(version, book, chapter, verseStart, verseEnd) {
     });
 }
 
-function getBiblesDb() { return biblesDb; }
-function getSongsDb() { return songsDb; }
-
-// Obtener todas las versiones de la Biblia disponibles en la BD
 function getVersions() {
     return new Promise((resolve, reject) => {
         biblesDb.all(`SELECT DISTINCT version FROM bible_verses ORDER BY version ASC`, [], (err, rows) => {
@@ -88,72 +191,20 @@ function getVersions() {
     });
 }
 
-// Obtener los libros correspondientes a una versión de manera ultra-simplificada y segura
 function getBooks(version) {
     return new Promise((resolve, reject) => {
-        console.log(`[SQL Query] Buscando libros para la versión: "${version}"`);
-
-        // Validación de seguridad si la versión llega vacía
-        if (!version) {
-            console.warn("[SQL Warn] Se intentó buscar libros para una versión vacía o indefinida.");
-            return resolve([]);
-        }
-
         biblesDb.all(
-            `SELECT DISTINCT book_name FROM bible_verses WHERE version = ?`, 
+            `SELECT book_name, MIN(id) AS min_id FROM bible_verses WHERE version = ? GROUP BY book_name ORDER BY min_id ASC`, 
             [version], 
             (err, rows) => {
-                if (err) {
-                    console.error('[SQL Error] Error en getBooks:', err);
-                    reject(err);
-                } else {
-                    // Si 'rows' llega indefinido por algún motivo de SQLite, lo forzamos a ser un array vacío []
-                    const filasSeguras = rows || [];
-                    
-                    // Imprimimos en la terminal de VS Code lo que nos devolvió exactamente la BD
-                    console.log("[SQL Debug] Filas devueltas crudas por la BD:", rows);
-                    console.log(`[SQL Result] Libros devueltos para "${version}": ${filasSeguras.length} registros.`);
-
-                    resolve(filasSeguras.map(row => row.book_name));
-                }
+                if (err) reject(err);
+                else resolve(rows.map(row => row.book_name));
             }
         );
     });
 }
 
-const SETTINGS_JSON_PATH = path.join(DB_DIR, 'settings.json');
-
-// Leer la configuración persistente
-function getSettings() {
-    try {
-        if (!fs.existsSync(SETTINGS_JSON_PATH)) {
-            // Configuración inicial predeterminada
-            const defaultSettings = { startTab: 'welcome' };
-            fs.writeFileSync(SETTINGS_JSON_PATH, JSON.stringify(defaultSettings, null, 2));
-            return defaultSettings;
-        }
-        const data = fs.readFileSync(SETTINGS_JSON_PATH, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        console.error("Error al leer settings.json, usando valores por defecto:", err);
-        return { startTab: 'welcome' };
-    }
-}
-
-// Guardar la configuración persistente
-function saveSettings(settings) {
-    try {
-        fs.writeFileSync(SETTINGS_JSON_PATH, JSON.stringify(settings, null, 2));
-        return { success: true };
-    } catch (err) {
-        console.error("Error al guardar settings.json:", err);
-        return { success: false, error: err.message };
-    }
-}
-
-// --- FUNCIONES PARA LA BASE DE DATOS DE CANCIONES (songs.db) ---
-
-// Buscar canciones en el catálogo (Filtra por título, letra o autor)
+// --- BÚSQUEDAS CANCIONES ---
 function searchSongs(query) {
     return new Promise((resolve, reject) => {
         const sqlQuery = `SELECT * FROM songs WHERE title LIKE ? OR lyrics LIKE ? OR author LIKE ? ORDER BY title ASC`;
@@ -165,11 +216,9 @@ function searchSongs(query) {
     });
 }
 
-// Crear o actualizar una canción
 function saveSong(song) {
     return new Promise((resolve, reject) => {
         if (song.id) {
-            // Actualización (Update) de una canción existente
             const stmt = songsDb.prepare(`UPDATE songs SET title = ?, lyrics = ?, author = ?, category = ? WHERE id = ?`);
             stmt.run(song.title, song.lyrics, song.author, song.category, song.id, (err) => {
                 if (err) reject(err);
@@ -177,18 +226,16 @@ function saveSong(song) {
             });
             stmt.finalize();
         } else {
-            // Inserción (Insert) de una nueva canción
             const stmt = songsDb.prepare(`INSERT INTO songs (title, lyrics, author, category) VALUES (?, ?, ?, ?)`);
             stmt.run(song.title, song.lyrics, song.author, song.category, function(err) {
                 if (err) reject(err);
-                else resolve({ success: true, id: this.lastID }); // 'this.lastID' obtiene el ID autoincremental recién creado
+                else resolve({ success: true, id: this.lastID });
             });
             stmt.finalize();
         }
     });
 }
 
-// Eliminar una canción del catálogo por su ID
 function deleteSong(id) {
     return new Promise((resolve, reject) => {
         const stmt = songsDb.prepare(`DELETE FROM songs WHERE id = ?`);
@@ -198,6 +245,28 @@ function deleteSong(id) {
         });
         stmt.finalize();
     });
+}
+
+function getBiblesDb() {
+    return biblesDb;
+}
+
+function getSongsDb() {
+    return songsDb;
+}
+
+// Eliminar físicamente un archivo de medios de la USB
+function deleteMediaFile(filePath) {
+    try {
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath); // Borrado físico del archivo
+            return { success: true };
+        }
+        return { success: false, error: "El archivo no existe físicamente." };
+    } catch (err) {
+        console.error("Error al eliminar archivo multimedia:", err);
+        return { success: false, error: err.message };
+    }
 }
 
 module.exports = {
@@ -210,6 +279,10 @@ module.exports = {
     searchSongs,
     saveSong,
     deleteSong,
+    scanMediaFolder,
+    saveWebPImage,  
+    importMediaFile,
+    deleteMediaFile,
     getBiblesDb,
     getSongsDb
 };
