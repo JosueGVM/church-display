@@ -56,8 +56,18 @@ async function loadInitialData() {
     try {
         // Cargar versiones desde la BD
         versionsList = await window.api.getVersions();
+
         if (versionsList.length > 0) {
-            selectedVersion = versionsList[0];
+            // Restaurar la versión que el usuario dejó activa la última vez
+            const settings = await window.api.getSettings();
+            const savedVersion = settings.lastBibleVersion;
+
+            if (savedVersion && versionsList.includes(savedVersion)) {
+                selectedVersion = savedVersion;
+            } else {
+                selectedVersion = versionsList[0];
+            }
+
             renderVersions();
         }
 
@@ -590,11 +600,19 @@ function renderVersions() {
         pill.className = `ver-pill ${v === selectedVersion ? 'active' : ''}`;
         pill.textContent = v;
 
-        pill.addEventListener('click', () => {
+        pill.addEventListener('click', async () => {
             selectedVersion = v;
             versionsContainer.querySelectorAll('.ver-pill').forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
-            
+
+            // Persistir la versión seleccionada para la próxima vez que abra la app
+            try {
+                const settings = await window.api.getSettings();
+                await window.api.saveSettings({ ...settings, lastBibleVersion: v });
+            } catch (err) {
+                console.error("[Bible] Error al guardar versión activa:", err);
+            }
+
             loadChapterTextAndRenderVersesGrid();
         });
 

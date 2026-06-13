@@ -1,6 +1,23 @@
 const { ipcMain, BrowserWindow } = require('electron');
 const dbManager = require('./dbManager');
 
+// Convierte una ruta absoluta o URL file:// al protocolo seguro local-media://
+// Windows: C:\ruta\archivo.jpg  →  local-media://host/C:/ruta/archivo.jpg
+// Mac/Linux: /ruta/archivo.jpg  →  local-media://host/ruta/archivo.jpg
+// file:///C:/ruta/archivo.jpg   →  local-media://host/C:/ruta/archivo.jpg
+function toLocalMediaUrl(filePath) {
+    if (!filePath || filePath.startsWith('local-media://')) return filePath;
+
+    let normalized;
+    if (filePath.startsWith('file://')) {
+        // pathToFileURL genera file:///ruta — quitamos el scheme y los slashes iniciales
+        normalized = decodeURIComponent(filePath.replace(/^file:\/\/\//, '').replace(/^file:\/\//, ''));
+    } else {
+        normalized = filePath.replace(/\\/g, '/').replace(/^\//, '');
+    }
+    return `local-media://host/${normalized}`;
+}
+
 function setupIpcHandlers() {
     // 1. Manejadores de proyección en tiempo real
     ipcMain.on('proyectar-contenido', (event, datos) => {
@@ -11,6 +28,26 @@ function setupIpcHandlers() {
         const projectionWin = windows.find(win => win.esProyeccion === true);
 
         if (projectionWin) {
+            // Convertir rutas de archivos locales al protocolo seguro antes de reenviar
+            if (datos.background && datos.background.path) {
+                datos = {
+                    ...datos,
+                    background: {
+                        ...datos.background,
+                        path: toLocalMediaUrl(datos.background.path)
+                    }
+                };
+            }
+            // También convertir el bgPath dentro del estilo del tema (imágenes/videos de fondo de temas)
+            if (datos.estilo && datos.estilo.bgPath) {
+                datos = {
+                    ...datos,
+                    estilo: {
+                        ...datos.estilo,
+                        bgPath: toLocalMediaUrl(datos.estilo.bgPath)
+                    }
+                };
+            }
             // Reenviar los datos de proyección a la pantalla secundaria
             projectionWin.webContents.send('actualizar-proyeccion', datos);
         }

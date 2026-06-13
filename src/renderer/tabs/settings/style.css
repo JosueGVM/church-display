@@ -11,7 +11,7 @@
 .settings-title {
     margin: 0;
     font-size: 26px;
-    color: #fff;
+    color: var(--text-primary);
     font-weight: bold;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 15px;
@@ -40,7 +40,7 @@
 .settings-card h3 {
     margin: 0 0 4px 0;
     font-size: 15px;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .settings-card p {
@@ -55,7 +55,7 @@
     list-style: none;
     padding: 0;
     margin: 8px 0;
-    background-color: #141417;
+    background-color: var(--bg-header);
     border: 1px solid var(--border-color);
     border-radius: 6px;
 }
@@ -64,7 +64,7 @@
     padding: 10px 12px;
     font-size: 13px;
     border-bottom: 1px solid var(--border-color);
-    color: #fff;
+    color: var(--text-primary);
 }
 .display-list li:last-child {
     border-bottom: none;
@@ -80,16 +80,7 @@
 }
 
 /* Formulario */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.form-group label {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
+/* .form-group → global.css */
 
 .form-checkbox-group {
     display: flex;

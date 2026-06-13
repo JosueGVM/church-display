@@ -1,7 +1,13 @@
-const { app, BrowserWindow, screen, ipcMain } = require('electron');
+const { app, BrowserWindow, screen, ipcMain, protocol, net } = require('electron');
 const path = require('path');
 const { setupIpcHandlers } = require('./ipcHandlers');
 const { initDatabases } = require('./dbManager');
+
+// Registrar el esquema como privilegiado ANTES de que la app esté lista.
+// Esto permite que local-media:// sirva video/audio sin restricciones de CORS.
+protocol.registerSchemesAsPrivileged([
+    { scheme: 'local-media', privileges: { secure: true, supportFetchAPI: true, stream: true } }
+]);
 
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
@@ -18,8 +24,7 @@ function createControlWindow() {
         webPreferences: {
             preload: path.join(__dirname, '../preload/controlPreload.js'),
             contextIsolation: true,
-            nodeIntegration: false,
-            webSecurity: false
+            nodeIntegration: false
         }
     });
 
@@ -55,7 +60,6 @@ function createProjectionWindow() {
                 preload: path.join(__dirname, '../preload/projectionPreload.js'),
                 contextIsolation: true,
                 nodeIntegration: false,
-                webSecurity: false,
                 backgroundThrottling: false
             }
         });
@@ -84,6 +88,20 @@ function createProjectionWindow() {
 
 // Iniciar ventanas cuando Electron esté listo
 app.whenReady().then(() => {
+    // Servir archivos multimedia locales a través del protocolo seguro local-media://
+    protocol.handle('local-media', (request) => {
+        // URL: local-media://host/C:/ruta/archivo.jpg  (Windows)
+        //      local-media://host/ruta/archivo.jpg     (Mac/Linux)
+        const url = new URL(request.url);
+        // url.pathname comienza con '/', lo quitamos para reconstruir la ruta real
+        const relativePath = url.pathname.replace(/^\//, '');
+        // En Windows quedará "C:/ruta/..." → file:///C:/ruta/...
+        // En Mac/Linux quedará "ruta/..." → necesitamos el '/' inicial de vuelta
+        const isWindows = process.platform === 'win32';
+        const filePath = isWindows ? relativePath : `/${relativePath}`;
+        return net.fetch(`file://${isWindows ? '/' : ''}${filePath}`);
+    });
+
     initDatabases();
     setupIpcHandlers(); 
     createControlWindow();

@@ -33,22 +33,6 @@
     max-width: 280px;
 }
 
-.column-header-title {
-    background-color: rgba(0, 0, 0, 0.08) !important;
-    border-bottom: 1px solid var(--border-color);
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.column-header-title h3 {
-    margin: 0;
-    font-size: 14px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
 
 .column-scroll-container {
     flex-grow: 1;
@@ -128,18 +112,7 @@
     gap: 14px;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.form-group label {
-    font-size: 11px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+/* .form-group, .form-row → global.css */
 
 .label-row {
     display: flex;
@@ -150,26 +123,6 @@
     font-size: 11px;
     font-weight: bold;
     color: var(--accent);
-}
-
-.form-group input[type="text"], .form-group select {
-    background-color: #131316;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    color: #fff;
-    padding: 10px;
-    font-size: 13px;
-    box-sizing: border-box;
-    width: 100%;
-}
-.form-group input[type="text"]:focus, .form-group select:focus {
-    outline: none;
-    border-color: var(--accent);
-}
-
-.form-row {
-    display: flex;
-    gap: 10px;
 }
 
 /* Selectores de color nativos discretos */
@@ -192,7 +145,7 @@ input[type="color"] {
 }
 
 .btn-align {
-    background-color: #131316;
+    background-color: var(--bg-main);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
     padding: 8px 0;
@@ -203,7 +156,7 @@ input[type="color"] {
 }
 .btn-align:hover {
     background-color: var(--border-color);
-    color: #fff;
+    color: var(--text-primary);
 }
 .btn-align.active {
     background-color: var(--accent);
@@ -275,22 +228,6 @@ details.settings-group .group-content {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-.preview-header {
-    padding: 12px 20px;
-    background-color: rgba(0, 0, 0, 0.08) !important;
-    border-bottom: 1px solid var(--border-color);
-}
-.preview-header h2 {
-    margin: 0 0 2px 0;
-    font-size: 16px;
-    color: var(--text-secondary);
-}
-.preview-header p {
-    margin: 0;
-    font-size: 11px;
-    color: var(--text-secondary);
 }
 
 .preview-display-container {
