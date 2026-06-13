@@ -32,15 +32,6 @@
     max-width: 280px;
 }
 
-.column-header-title {
-    background-color: #16161b;
-    border-bottom: 1px solid var(--border-color);
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .column-header-title h3 {
     margin: 0;
     font-size: 14px;
@@ -49,13 +40,13 @@
     letter-spacing: 1px;
 }
 
-.column-header {
-    background-color: #16161b;
+.column-header, .column-header-title {
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-bottom: 1px solid var(--border-color);
-    padding: 8px 10px;
-    display: flex;
-    gap: 6px;
+    padding: 12px 14px;
+    display: flex; 
     align-items: center;
+    justify-content: space-between;
 }
 
 .column-header input {
@@ -130,12 +121,13 @@
 
 #notes-catalog-list li {
     padding: 12px;
-    background-color: #1a1a20;
-    border: 1px solid var(--border-color);
+    background-color: var(--bg-item) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.15s ease;
 }
+
 #notes-catalog-list li:hover {
     border-color: var(--accent);
     background-color: rgba(255, 255, 255, 0.02);
@@ -235,13 +227,13 @@
 
 .preview-header {
     padding: 12px 20px;
-    background-color: rgba(255, 255, 255, 0.01);
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-bottom: 1px solid var(--border-color);
 }
 .preview-header h2 {
     margin: 0 0 2px 0;
     font-size: 16px;
-    color: #fff;
+    color: var(--text-secondary);
 }
 .preview-header p {
     margin: 0;
@@ -266,7 +258,7 @@
 /* Tarjetas de Diapositiva (Fondo blanco, texto centrado y en negrita) */
 .slide-card {
     background-color: #ffffff !important;
-    color: #000000 !important;
+    color: var(--text-secondary) !important;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 20px 10px 10px 10px;

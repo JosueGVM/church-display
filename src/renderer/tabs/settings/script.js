@@ -1,7 +1,5 @@
-import { selectTab } from '../../control/script.js'; // Importamos el navegador del enrutador principal
-
 let screenList, btnRedetectScreens, btnToggleProjection;
-let selectStartTab, checkHideWelcome, btnViewWelcome;
+let selectStartTab, selectUiTheme, checkHideWelcome, btnViewWelcome;
 let settingsSaveStatus;
 
 let isProjectionOpen = false; // Bandera de estado del proyector
@@ -13,6 +11,7 @@ export async function init() {
     btnToggleProjection = document.getElementById('btn-toggle-projection');
 
     selectStartTab = document.getElementById('select-start-tab');
+    selectUiTheme = document.getElementById('select-ui-theme');
     checkHideWelcome = document.getElementById('check-hide-welcome');
     btnViewWelcome = document.getElementById('btn-view-welcome');
 
@@ -22,11 +21,16 @@ export async function init() {
     btnRedetectScreens.addEventListener('click', detectDisplays);
     btnToggleProjection.addEventListener('click', handleToggleProjection);
     btnViewWelcome.addEventListener('click', () => {
-        selectTab('welcome'); // Redirección forzada al tutorial
+        // Simulamos un clic físico sobre el botón de bienvenida de tu barra de herramientas
+        const welcomeBtn = document.querySelector('.nav-btn[data-tab="welcome"]');
+        if (welcomeBtn) {
+            welcomeBtn.click();
+        }
     });
 
     // Cambios automáticos de configuración (Se guardan de inmediato al interactuar)
     selectStartTab.addEventListener('change', saveSettings);
+    selectUiTheme.addEventListener('change', saveSettings);
     checkHideWelcome.addEventListener('change', saveSettings);
 
     // 3. Inicializaciones iniciales
@@ -97,6 +101,7 @@ async function loadSettings() {
         const settings = await window.api.getSettings();
         if (settings) {
             selectStartTab.value = settings.startTab || 'welcome';
+            selectUiTheme.value = settings.uiTheme || 'dark';
             checkHideWelcome.checked = !!settings.hideWelcomeIcon;
         }
     } catch (err) {
@@ -104,12 +109,20 @@ async function loadSettings() {
     }
 }
 
+// Guardar de forma persistente y segura las configuraciones de usuario
 async function saveSettings() {
-    const startTab = selectStartTab.value;
-    const hideWelcomeIcon = checkHideWelcome.checked;
-
     try {
-        const result = await window.api.saveSettings({ startTab, hideWelcomeIcon });
+        // 1. Leemos las configuraciones actuales para no sobreescribir ni perder los temas creados
+        const settings = await window.api.getSettings();
+        
+        // 2. Actualizamos únicamente los campos de inicio y estilo de interfaz
+        settings.startTab = selectStartTab.value;
+        settings.uiTheme = selectUiTheme.value;
+        settings.hideWelcomeIcon = checkHideWelcome.checked;
+
+        // 3. Guardamos el objeto completo y combinado de vuelta en la USB
+        const result = await window.api.saveSettings(settings);
+        
         if (result && result.success) {
             // Disparamos el evento global para que el Sidebar se actualice al instante
             window.dispatchEvent(new CustomEvent('settings-updated'));

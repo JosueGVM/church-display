@@ -22,7 +22,7 @@
 
 /* Cabecera de Versiones */
 .versions-header {
-    background-color: #16161b;
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-bottom: 1px solid var(--border-color);
     padding: 6px 8px;
     display: flex;

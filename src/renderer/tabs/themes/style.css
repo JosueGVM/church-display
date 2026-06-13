@@ -34,7 +34,7 @@
 }
 
 .column-header-title {
-    background-color: #16161b;
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-bottom: 1px solid var(--border-color);
     padding: 12px 14px;
     display: flex;
@@ -86,15 +86,16 @@
 
 #themes-list li {
     padding: 12px;
-    background-color: #1a1a20;
-    border: 1px solid var(--border-color);
+    background-color: var(--bg-item) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
     font-weight: bold;
-    color: #fff;
+    color: var(--text-secondary) !important; /* Texto adaptable */
     transition: all 0.15s ease;
 }
+
 #themes-list li:hover {
     border-color: var(--accent);
     background-color: rgba(255, 255, 255, 0.02);
@@ -106,7 +107,7 @@
 
 /* Panel de Temas Globales (Fondo de Columna 1) */
 .globals-section {
-    background-color: #16161b;
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-top: 1px solid var(--border-color);
     padding: 14px;
     display: flex;
@@ -229,16 +230,16 @@ details.settings-group summary {
     padding: 10px 12px;
     font-size: 13px;
     font-weight: bold;
-    color: #fff;
+    color: var(--text-secondary) !important; /* Texto adaptable */
     cursor: pointer;
-    background-color: #16161b;
+    background-color: rgba(0, 0, 0, 0.06) !important; /* Fondo suave adaptable */
     user-select: none;
     outline: none;
-    list-style: none; /* Quita la flecha nativa de algunos navegadores */
+    list-style: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
+} 
 
 /* Indicador de flecha personalizado para el acordeón */
 details.settings-group summary::after {
@@ -262,7 +263,7 @@ details.settings-group .group-content {
     flex-direction: column;
     gap: 12px;
     border-top: 1px solid var(--border-color);
-    background-color: rgba(0,0,0,0.05);
+    background-color: var(--bg-item);
 }
 
 /* ================= COLUMNA 3 (VISOR PREVISUALIZADOR) ================= */
@@ -278,13 +279,13 @@ details.settings-group .group-content {
 
 .preview-header {
     padding: 12px 20px;
-    background-color: rgba(255, 255, 255, 0.01);
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-bottom: 1px solid var(--border-color);
 }
 .preview-header h2 {
     margin: 0 0 2px 0;
     font-size: 16px;
-    color: #fff;
+    color: var(--text-secondary);
 }
 .preview-header p {
     margin: 0;
@@ -298,7 +299,7 @@ details.settings-group .group-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #101014;
+    background-color: var(--bg-item);
     box-sizing: border-box;
     width: 100%;
 }
@@ -307,7 +308,7 @@ details.settings-group .group-content {
 .theme-preview-box {
     width: 100%;
     aspect-ratio: 16 / 9;
-    background-color: #131316;
+    background-color: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     overflow: hidden;
@@ -344,7 +345,7 @@ details.settings-group .group-content {
     width: 100%;
     text-align: center;
     font-family: 'Segoe UI', sans-serif;
-    color: #ffffff;
+    color: var(--text-secondary);
     font-size: calc(var(--theme-font-size, 5)* 1cqh);
     font-weight: normal;
     line-height: var(--theme-line-height, 1.4);

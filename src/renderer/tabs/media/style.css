@@ -21,8 +21,8 @@
     overflow: hidden;
 }
 
-.column-header {
-    background-color: #16161b;
+.column-header, .column-header-title {
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-bottom: 1px solid var(--border-color);
     padding: 8px 10px;
     display: flex;
@@ -34,15 +34,6 @@
     flex-grow: 1;
     font-size: 13px;
     padding: 8px;
-}
-
-.column-header-title {
-    background-color: #16161b;
-    border-bottom: 1px solid var(--border-color);
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
 .column-header-title h3 {
@@ -114,17 +105,13 @@
     padding: 0 8px;
 }
 
-#media-catalog-list li {
-    padding: 10px;
-    background-color: #1a1a20;
-    border: 1px solid var(--border-color);
+#media-catalog-list li, .cronograma-item {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 6px;
-    cursor: grab;
     transition: all 0.15s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
+
 #media-catalog-list li:hover {
     border-color: var(--accent);
     background-color: rgba(255, 255, 255, 0.02);
@@ -146,7 +133,7 @@
 #media-catalog-list li h4 {
     margin: 0 0 2px 0;
     font-size: 12px;
-    color: #fff;
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -179,17 +166,6 @@
     min-height: 100%;
 }
 
-.cronograma-item {
-    padding: 8px 10px;
-    background-color: #1a1a20;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: grab;
-    transition: border-color 0.15s ease;
-}
 .cronograma-item:hover {
     border-color: var(--accent);
 }
@@ -201,7 +177,7 @@
 .cronograma-item-title {
     font-size: 12px;
     font-weight: bold;
-    color: #fff;
+    color: var(--text-secondary);
     flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
@@ -246,7 +222,7 @@
 /* ================= COLUMNA 3 (REPRODUCTOR / VISOR) ================= */
 .media-player-column {
     flex: 1;
-    background-color: var(--bg-card);
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     display: flex;
@@ -262,7 +238,7 @@
 .player-header h2 {
     margin: 0 0 2px 0;
     font-size: 16px;
-    color: #fff;
+    color: var(--text-secondary);
 }
 .player-header p {
     margin: 0;
@@ -277,7 +253,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #101014;
+    background-color: var(--bg-item);
 }
 
 /* El cuadro simula una pantalla de proyección 16:9 */
@@ -285,7 +261,7 @@
     width: 100%;
     max-width: 550px;
     aspect-ratio: 16 / 9;
-    background-color: #000;
+    background-color: var(--bg-item);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     overflow: hidden;
@@ -318,7 +294,7 @@
     gap: 15px;
     width: 100%;
     height: 100%;
-    background-color: #1a1a20;
+    background-color: var(--bg-item) !important; /* Hereda color de tarjeta */
     box-sizing: border-box;
     padding: 20px;
 }
@@ -347,7 +323,7 @@
 
 /* Botonera inferior */
 .player-footer {
-    background-color: #16161b;
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-top: 1px solid var(--border-color);
     padding: 12px 20px;
     display: flex;

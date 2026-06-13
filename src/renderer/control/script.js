@@ -18,6 +18,9 @@ function applySidebarSettings(settings) {
             separator.style.display = 'block';
         }
     }
+
+    const theme = (settings && settings.uiTheme) ? settings.uiTheme : 'dark';
+    document.body.className = `theme-${theme}`; // Aplica .theme-dark o .theme-light al body
 }
 
 // Función para cambiar de pestaña e inyectar recursos dinámicamente
@@ -45,7 +48,7 @@ async function selectTab(tabName) {
                 module.init();
             }
         } catch (jsError) {
-            console.log(`[Router] Pestaña "${tabName}" cargada (sin lógica JS activa).`);
+            console.warn(`[Router Debug] Error al inicializar la lógica de "${tabName}":`, jsError);
         }
 
     } catch (error) {

@@ -32,8 +32,8 @@
     max-width: 280px;
 }
 
-.column-header-title {
-    background-color: #16161b;
+.column-header, .column-header-title {
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-bottom: 1px solid var(--border-color);
     padding: 12px 14px;
     display: flex;
@@ -86,15 +86,13 @@
 
 #notes-catalog-list li {
     padding: 12px;
-    background-color: #1a1a20;
-    border: 1px solid var(--border-color);
+    background-color: rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.15s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
+ 
 #notes-catalog-list li:hover {
     border-color: var(--accent);
     background-color: rgba(255, 255, 255, 0.02);
@@ -112,7 +110,7 @@
 .note-catalog-info h4 {
     margin: 0 0 2px 0;
     font-size: 13px;
-    color: #fff;
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -202,13 +200,13 @@
 
 .preview-header {
     padding: 12px 20px;
-    background-color: rgba(255, 255, 255, 0.01);
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border-bottom: 1px solid var(--border-color);
 }
 .preview-header h2 {
     margin: 0 0 2px 0;
     font-size: 16px;
-    color: #fff;
+    color: var(--text-secondary);
 }
 .preview-header p {
     margin: 0;
@@ -223,7 +221,7 @@
     flex-direction: column; /* Apilado vertical */
     align-items: center;
     justify-content: center;
-    background-color: #101014;
+    background-color: var(--bg-card);
     box-sizing: border-box;
     width: 100%;
     gap: 15px; /* Separación de las dos pantallas */
@@ -252,14 +250,13 @@
 .note-preview-box {
     width: 100%;
     aspect-ratio: 16 / 9;
-    background-color: #131316;
+    background-color: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     overflow: hidden;
     position: relative;
     box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     box-sizing: border-box;
-    
     container-type: size; /* Container Queries activas */
 }
 
@@ -274,7 +271,7 @@
     top: 6px;
     right: 10px;
     background-color: #d9534f;
-    color: #fff;
+    color: var(--text-secondary);
     font-size: 8px;
     font-weight: bold;
     padding: 2px 6px;
@@ -307,7 +304,7 @@
     width: 100%;
     text-align: center;
     font-family: 'Segoe UI', sans-serif;
-    color: #ffffff;
+    color: var(--text-secondary);
     font-size: 5cqh; /* Escala proporcional al alto */
     font-weight: bold;
     line-height: 1.4;
@@ -326,7 +323,7 @@
     bottom: 5cqh;
     left: 5%;
     width: 90%;
-    background-color: rgba(19, 19, 22, 0.95);
+    background-color: rgba(0, 0, 0, 0.08) !important;
     border: 1px solid var(--border-color);
     border-left: calc(0.8 * 1cqh) solid #d9534f;
     color: #ffffff;
